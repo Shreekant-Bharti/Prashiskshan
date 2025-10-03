@@ -1,5 +1,13 @@
 import { motion, AnimatePresence } from "motion/react";
-import { GraduationCap, Users, Building2, Shield, X, CheckCircle, Loader2 } from "lucide-react";
+import {
+  GraduationCap,
+  Users,
+  Building2,
+  Shield,
+  X,
+  CheckCircle,
+  Loader2,
+} from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
@@ -8,7 +16,13 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
@@ -66,26 +80,30 @@ const industryLoginSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-const industryRegisterSchema = z.object({
-  companyName: z.string().min(2, "Company name is required"),
-  companyEmail: z.string().email("Invalid email address"),
-  industryType: z.string().min(1, "Industry type is required"),
-  companySize: z.string().min(1, "Company size is required"),
-  contactPerson: z.string().min(2, "Contact person name is required"),
-  contactNumber: z.string().min(10, "Valid contact number is required"),
-  designation: z.string().min(2, "Designation is required"),
-  gender: z.string().min(1, "Please select your gender"),
-  dateOfBirth: z.string().min(1, "Date of birth is required"),
-  city: z.string().min(2, "City is required"),
-  state: z.string().min(2, "State is required"),
-  country: z.string().min(2, "Country is required"),
-  website: z.string().url("Valid website URL is required"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const industryRegisterSchema = z
+  .object({
+    companyName: z.string().min(2, "Company name is required"),
+    companyEmail: z.string().email("Invalid email address"),
+    industryType: z.string().min(1, "Industry type is required"),
+    companySize: z.string().min(1, "Company size is required"),
+    contactPerson: z.string().min(2, "Contact person name is required"),
+    contactNumber: z.string().min(10, "Valid contact number is required"),
+    designation: z.string().min(2, "Designation is required"),
+    gender: z.string().min(1, "Please select your gender"),
+    dateOfBirth: z.string().min(1, "Date of birth is required"),
+    city: z.string().min(2, "City is required"),
+    state: z.string().min(2, "State is required"),
+    country: z.string().min(2, "Country is required"),
+    website: z.string().url("Valid website URL is required"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 type PortalType = "admin" | "faculty" | "student" | "industry";
 
@@ -94,7 +112,8 @@ const portals = [
     id: "admin" as PortalType,
     icon: Shield,
     title: "Admin Panel",
-    description: "Manage the entire ecosystem with comprehensive analytics, reporting, and system controls",
+    description:
+      "Manage the entire ecosystem with comprehensive analytics, reporting, and system controls",
     gradient: "from-violet-500 to-purple-500",
     bgColor: "bg-amber-100 dark:bg-amber-950/30",
   },
@@ -102,7 +121,8 @@ const portals = [
     id: "faculty" as PortalType,
     icon: Users,
     title: "Faculty Dashboard",
-    description: "Monitor student progress, provide mentorship, and track internship outcomes in real-time",
+    description:
+      "Monitor student progress, provide mentorship, and track internship outcomes in real-time",
     gradient: "from-blue-500 to-cyan-500",
     bgColor: "bg-blue-100 dark:bg-blue-950/30",
   },
@@ -110,7 +130,8 @@ const portals = [
     id: "student" as PortalType,
     icon: GraduationCap,
     title: "Student Portal",
-    description: "Access verified internships, track your progress, and build your career with personalized guidance",
+    description:
+      "Access verified internships, track your progress, and build your career with personalized guidance",
     gradient: "from-purple-500 to-indigo-500",
     bgColor: "bg-purple-100 dark:bg-purple-950/30",
   },
@@ -118,26 +139,31 @@ const portals = [
     id: "industry" as PortalType,
     icon: Building2,
     title: "Industry Collaboration",
-    description: "Post opportunities, recruit top talent, and collaborate with educational institutions seamlessly",
+    description:
+      "Post opportunities, recruit top talent, and collaborate with educational institutions seamlessly",
     gradient: "from-emerald-500 to-teal-500",
     bgColor: "bg-emerald-100 dark:bg-emerald-950/30",
   },
 ];
 
 const playNotificationSound = () => {
-  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  const audioContext = new (window.AudioContext ||
+    (window as any).webkitAudioContext)();
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
-  
+
   oscillator.connect(gainNode);
   gainNode.connect(audioContext.destination);
-  
+
   oscillator.frequency.value = 800;
-  oscillator.type = 'sine';
-  
+  oscillator.type = "sine";
+
   gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-  
+  gainNode.gain.exponentialRampToValueAtTime(
+    0.01,
+    audioContext.currentTime + 0.5
+  );
+
   oscillator.start(audioContext.currentTime);
   oscillator.stop(audioContext.currentTime + 0.5);
 };
@@ -164,7 +190,10 @@ export const LoginCardsSection = () => {
   };
 
   return (
-    <section id="portals" className="py-24 bg-gradient-to-b from-background to-muted">
+    <section
+      id="portals"
+      className="py-24 bg-gradient-to-b from-background to-muted"
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -177,7 +206,8 @@ export const LoginCardsSection = () => {
             Choose Your Portal
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Access the platform designed specifically for your role in the career development ecosystem
+            Access the platform designed specifically for your role in the
+            career development ecosystem
           </p>
         </motion.div>
 
@@ -191,7 +221,9 @@ export const LoginCardsSection = () => {
               showRegister={showRegister === portal.id}
               showSuccess={showSuccess === portal.id}
               onCardClick={handleCardClick}
-              onToggleRegister={() => setShowRegister(showRegister === portal.id ? null : portal.id)}
+              onToggleRegister={() =>
+                setShowRegister(showRegister === portal.id ? null : portal.id)
+              }
               onRegistrationSuccess={handleRegistrationSuccess}
             />
           ))}
@@ -202,7 +234,7 @@ export const LoginCardsSection = () => {
 };
 
 interface PortalCardProps {
-  portal: typeof portals[0];
+  portal: (typeof portals)[0];
   index: number;
   isExpanded: boolean;
   showRegister: boolean;
@@ -231,24 +263,30 @@ const PortalCard = ({
       animate={{
         scale: isExpanded ? 1.02 : 1,
       }}
-      className={`${portal.bgColor} rounded-3xl p-6 relative overflow-hidden border border-border shadow-lg transition-all duration-300 ${
+      className={`${
+        portal.bgColor
+      } rounded-3xl p-6 relative overflow-hidden border border-border shadow-lg transition-all duration-300 ${
         isExpanded ? "col-span-1 md:col-span-2 lg:col-span-2" : ""
       }`}
     >
       {/* Gradient Border Effect */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${portal.gradient} opacity-0 hover:opacity-10 transition-smooth rounded-3xl pointer-events-none`} />
-      
+      <div
+        className={`absolute inset-0 bg-gradient-to-br ${portal.gradient} opacity-0 hover:opacity-10 transition-smooth rounded-3xl pointer-events-none`}
+      />
+
       {!isExpanded && (
         <div onClick={() => onCardClick(portal.id)} className="cursor-pointer">
           {/* Icon with Gradient */}
-          <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${portal.gradient} mb-6 hover:shadow-glow transition-smooth`}>
+          <div
+            className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${portal.gradient} mb-6 hover:shadow-glow transition-smooth`}
+          >
             <portal.icon className="w-8 h-8 text-white" />
           </div>
 
           <h3 className="text-2xl font-bold mb-3 text-foreground hover:text-primary transition-smooth">
             {portal.title}
           </h3>
-          
+
           <p className="text-muted-foreground leading-relaxed">
             {portal.description}
           </p>
@@ -262,7 +300,12 @@ const PortalCard = ({
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
             </svg>
           </div>
         </div>
@@ -278,10 +321,14 @@ const PortalCard = ({
           >
             <div className="flex justify-between items-start mb-6">
               <div className="flex items-center gap-3">
-                <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${portal.gradient}`}>
+                <div
+                  className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${portal.gradient}`}
+                >
                   <portal.icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground">{portal.title}</h3>
+                <h3 className="text-xl font-bold text-foreground">
+                  {portal.title}
+                </h3>
               </div>
               <Button
                 variant="ghost"
@@ -311,7 +358,7 @@ const PortalCard = ({
   );
 };
 
-const SuccessMessage = ({ portal }: { portal: typeof portals[0] }) => {
+const SuccessMessage = ({ portal }: { portal: (typeof portals)[0] }) => {
   const messages = {
     admin: "Thank you for registration. We'll get back to you soon.",
     faculty: "Thank you for registration. Please wait for Admin approval.",
@@ -336,7 +383,7 @@ const LoginForm = ({
   portal,
   onRegisterClick,
 }: {
-  portal: typeof portals[0];
+  portal: (typeof portals)[0];
   onRegisterClick: () => void;
 }) => {
   const navigate = useNavigate();
@@ -355,16 +402,24 @@ const LoginForm = ({
     }
   };
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(getSchema()),
   });
 
   const onSubmit = async (data: any) => {
+    console.log("Form submitted for portal:", portal.id, "with data:", data);
+
     if (portal.id === "student") {
       setLoading(true);
       const DUMMY = { email: "student1@campus.com", password: "Student@123" };
       setTimeout(() => {
-        const email = String(data.email || "").trim().toLowerCase();
+        const email = String(data.email || "")
+          .trim()
+          .toLowerCase();
         if (email === DUMMY.email && data.password === DUMMY.password) {
           localStorage.setItem("student_logged_in", "true");
           localStorage.setItem("student_email", String(data.email));
@@ -378,21 +433,79 @@ const LoginForm = ({
     } else if (portal.id === "industry") {
       setLoading(true);
       const DUMMY = { email: "industry1@campus.com", password: "Industry@123" };
-      console.log("Industry login attempt:", { 
-        inputEmail: data.companyEmail, 
+      console.log("Industry login attempt:", {
+        inputEmail: data.companyEmail,
         inputPassword: data.password,
         expectedEmail: DUMMY.email,
-        expectedPassword: DUMMY.password
+        expectedPassword: DUMMY.password,
       });
       setTimeout(() => {
-        const email = String(data.companyEmail || "").trim().toLowerCase();
-        console.log("Comparing:", { email, dummyEmail: DUMMY.email, match: email === DUMMY.email });
+        const email = String(data.companyEmail || "")
+          .trim()
+          .toLowerCase();
+        console.log("Comparing:", {
+          email,
+          dummyEmail: DUMMY.email,
+          match: email === DUMMY.email,
+        });
         if (email === DUMMY.email && data.password === DUMMY.password) {
           localStorage.setItem("isIndustryLoggedIn", "true");
           toast.success("Welcome to Industry Dashboard!");
           navigate("/industry-dashboard");
         } else {
-          toast.error("Invalid credentials. Use industry1@campus.com / Industry@123");
+          toast.error(
+            "Invalid credentials. Use industry1@campus.com / Industry@123"
+          );
+        }
+        setLoading(false);
+      }, 500);
+    } else if (portal.id === "admin") {
+      setLoading(true);
+      const DUMMY = { email: "admin@campus.com", password: "Admin@123" };
+      console.log("Admin login attempt:", {
+        inputEmail: data.email,
+        inputPassword: data.password,
+        expectedEmail: DUMMY.email,
+        expectedPassword: DUMMY.password,
+      });
+      setTimeout(() => {
+        const email = String(data.email || "")
+          .trim()
+          .toLowerCase();
+        console.log("Comparing admin credentials:", {
+          email,
+          dummyEmail: DUMMY.email,
+          emailMatch: email === DUMMY.email,
+          passwordMatch: data.password === DUMMY.password,
+        });
+        if (email === DUMMY.email && data.password === DUMMY.password) {
+          console.log("Admin login successful, setting localStorage");
+          localStorage.setItem("admin_logged_in", "true");
+          localStorage.setItem("admin_email", String(data.email));
+          console.log("localStorage set:", {
+            admin_logged_in: localStorage.getItem("admin_logged_in"),
+            admin_email: localStorage.getItem("admin_email"),
+          });
+          toast.success("Welcome to Admin Dashboard!");
+          navigate("/admin-dashboard");
+        } else {
+          console.log("Admin login failed");
+          toast.error("Invalid credentials. Use admin@campus.com / Admin@123");
+        }
+        setLoading(false);
+      }, 500);
+    } else if (portal.id === "faculty") {
+      setLoading(true);
+      const DUMMY = { collegeId: "FAC001", password: "Faculty@123" };
+      setTimeout(() => {
+        const collegeId = String(data.collegeId || "").trim();
+        if (collegeId === DUMMY.collegeId && data.password === DUMMY.password) {
+          localStorage.setItem("faculty_logged_in", "true");
+          localStorage.setItem("faculty_email", "faculty@campus.com");
+          toast.success("Welcome to Faculty Dashboard!");
+          navigate("/faculty-dashboard");
+        } else {
+          toast.error("Invalid credentials. Use FAC001 / Faculty@123");
         }
         setLoading(false);
       }, 500);
@@ -414,7 +527,9 @@ const LoginForm = ({
             {...register("email")}
           />
           {errors.email && (
-            <p className="text-sm text-destructive">{errors.email.message as string}</p>
+            <p className="text-sm text-destructive">
+              {errors.email.message as string}
+            </p>
           )}
         </div>
       ) : portal.id === "admin" ? (
@@ -423,11 +538,13 @@ const LoginForm = ({
           <Input
             id={`${portal.id}-email`}
             type="email"
-            placeholder="admin@example.com"
+            placeholder="admin@campus.com"
             {...register("email")}
           />
           {errors.email && (
-            <p className="text-sm text-destructive">{errors.email.message as string}</p>
+            <p className="text-sm text-destructive">
+              {errors.email.message as string}
+            </p>
           )}
         </div>
       ) : portal.id === "industry" ? (
@@ -436,11 +553,13 @@ const LoginForm = ({
           <Input
             id={`${portal.id}-companyEmail`}
             type="email"
-            placeholder="company@example.com"
+            placeholder="industry1@campus.com"
             {...register("companyEmail")}
           />
           {errors.companyEmail && (
-            <p className="text-sm text-destructive">{errors.companyEmail.message as string}</p>
+            <p className="text-sm text-destructive">
+              {errors.companyEmail.message as string}
+            </p>
           )}
         </div>
       ) : (
@@ -448,11 +567,13 @@ const LoginForm = ({
           <Label htmlFor={`${portal.id}-collegeId`}>College ID</Label>
           <Input
             id={`${portal.id}-collegeId`}
-            placeholder="Enter your College ID"
+            placeholder="FAC001"
             {...register("collegeId")}
           />
           {errors.collegeId && (
-            <p className="text-sm text-destructive">{errors.collegeId.message as string}</p>
+            <p className="text-sm text-destructive">
+              {errors.collegeId.message as string}
+            </p>
           )}
         </div>
       )}
@@ -466,7 +587,9 @@ const LoginForm = ({
           {...register("password")}
         />
         {errors.password && (
-          <p className="text-sm text-destructive">{errors.password.message as string}</p>
+          <p className="text-sm text-destructive">
+            {errors.password.message as string}
+          </p>
         )}
       </div>
 
@@ -493,7 +616,7 @@ const RegistrationForm = ({
   onSuccess,
   onBack,
 }: {
-  portal: typeof portals[0];
+  portal: (typeof portals)[0];
   onSuccess: () => void;
   onBack: () => void;
 }) => {
@@ -514,7 +637,12 @@ const RegistrationForm = ({
     }
   };
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(getSchema()),
   });
 
@@ -522,7 +650,9 @@ const RegistrationForm = ({
     if (portal.id === "student") {
       setLoading(true);
       setTimeout(() => {
-        toast.success("Registration successful! Please login using the dummy credentials.");
+        toast.success(
+          "Registration successful! Please login using the dummy credentials."
+        );
         onSuccess();
         setLoading(false);
       }, 600);
@@ -544,18 +674,43 @@ const RegistrationForm = ({
         <>
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
-            <Input id="name" placeholder="Enter your name" {...register("name")} />
-            {errors.name && <p className="text-sm text-destructive">{errors.name.message as string}</p>}
+            <Input
+              id="name"
+              placeholder="Enter your name"
+              {...register("name")}
+            />
+            {errors.name && (
+              <p className="text-sm text-destructive">
+                {errors.name.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="admin@example.com" {...register("email")} />
-            {errors.email && <p className="text-sm text-destructive">{errors.email.message as string}</p>}
+            <Input
+              id="email"
+              type="email"
+              placeholder="admin@example.com"
+              {...register("email")}
+            />
+            {errors.email && (
+              <p className="text-sm text-destructive">
+                {errors.email.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="role">Role / Permissions</Label>
-            <Input id="role" placeholder="e.g., Super Admin" {...register("role")} />
-            {errors.role && <p className="text-sm text-destructive">{errors.role.message as string}</p>}
+            <Input
+              id="role"
+              placeholder="e.g., Super Admin"
+              {...register("role")}
+            />
+            {errors.role && (
+              <p className="text-sm text-destructive">
+                {errors.role.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label>Gender</Label>
@@ -563,33 +718,69 @@ const RegistrationForm = ({
               name="gender"
               control={control}
               render={({ field }) => (
-                <RadioGroup onValueChange={field.onChange} value={field.value} className="flex gap-4">
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  className="flex gap-4"
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="male" id="admin-male" />
-                    <Label htmlFor="admin-male" className="cursor-pointer font-normal">Male</Label>
+                    <Label
+                      htmlFor="admin-male"
+                      className="cursor-pointer font-normal"
+                    >
+                      Male
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="female" id="admin-female" />
-                    <Label htmlFor="admin-female" className="cursor-pointer font-normal">Female</Label>
+                    <Label
+                      htmlFor="admin-female"
+                      className="cursor-pointer font-normal"
+                    >
+                      Female
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="other" id="admin-other" />
-                    <Label htmlFor="admin-other" className="cursor-pointer font-normal">Other</Label>
+                    <Label
+                      htmlFor="admin-other"
+                      className="cursor-pointer font-normal"
+                    >
+                      Other
+                    </Label>
                   </div>
                 </RadioGroup>
               )}
             />
-            {errors.gender && <p className="text-sm text-destructive">{errors.gender.message as string}</p>}
+            {errors.gender && (
+              <p className="text-sm text-destructive">
+                {errors.gender.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="dateOfBirth">Date of Birth</Label>
             <Input id="dateOfBirth" type="date" {...register("dateOfBirth")} />
-            {errors.dateOfBirth && <p className="text-sm text-destructive">{errors.dateOfBirth.message as string}</p>}
+            {errors.dateOfBirth && (
+              <p className="text-sm text-destructive">
+                {errors.dateOfBirth.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="Create password" {...register("password")} />
-            {errors.password && <p className="text-sm text-destructive">{errors.password.message as string}</p>}
+            <Input
+              id="password"
+              type="password"
+              placeholder="Create password"
+              {...register("password")}
+            />
+            {errors.password && (
+              <p className="text-sm text-destructive">
+                {errors.password.message as string}
+              </p>
+            )}
           </div>
         </>
       )}
@@ -598,23 +789,56 @@ const RegistrationForm = ({
         <>
           <div className="space-y-2">
             <Label htmlFor="fullName">Full Name</Label>
-            <Input id="fullName" placeholder="Enter your full name" {...register("fullName")} />
-            {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message as string}</p>}
+            <Input
+              id="fullName"
+              placeholder="Enter your full name"
+              {...register("fullName")}
+            />
+            {errors.fullName && (
+              <p className="text-sm text-destructive">
+                {errors.fullName.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="faculty@college.edu" {...register("email")} />
-            {errors.email && <p className="text-sm text-destructive">{errors.email.message as string}</p>}
+            <Input
+              id="email"
+              type="email"
+              placeholder="faculty@college.edu"
+              {...register("email")}
+            />
+            {errors.email && (
+              <p className="text-sm text-destructive">
+                {errors.email.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="collegeId">College ID</Label>
-            <Input id="collegeId" placeholder="Your College ID" {...register("collegeId")} />
-            {errors.collegeId && <p className="text-sm text-destructive">{errors.collegeId.message as string}</p>}
+            <Input
+              id="collegeId"
+              placeholder="Your College ID"
+              {...register("collegeId")}
+            />
+            {errors.collegeId && (
+              <p className="text-sm text-destructive">
+                {errors.collegeId.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="department">Department</Label>
-            <Input id="department" placeholder="e.g., Computer Science" {...register("department")} />
-            {errors.department && <p className="text-sm text-destructive">{errors.department.message as string}</p>}
+            <Input
+              id="department"
+              placeholder="e.g., Computer Science"
+              {...register("department")}
+            />
+            {errors.department && (
+              <p className="text-sm text-destructive">
+                {errors.department.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label>Gender</Label>
@@ -622,33 +846,69 @@ const RegistrationForm = ({
               name="gender"
               control={control}
               render={({ field }) => (
-                <RadioGroup onValueChange={field.onChange} value={field.value} className="flex gap-4">
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  className="flex gap-4"
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="male" id="faculty-male" />
-                    <Label htmlFor="faculty-male" className="cursor-pointer font-normal">Male</Label>
+                    <Label
+                      htmlFor="faculty-male"
+                      className="cursor-pointer font-normal"
+                    >
+                      Male
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="female" id="faculty-female" />
-                    <Label htmlFor="faculty-female" className="cursor-pointer font-normal">Female</Label>
+                    <Label
+                      htmlFor="faculty-female"
+                      className="cursor-pointer font-normal"
+                    >
+                      Female
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="other" id="faculty-other" />
-                    <Label htmlFor="faculty-other" className="cursor-pointer font-normal">Other</Label>
+                    <Label
+                      htmlFor="faculty-other"
+                      className="cursor-pointer font-normal"
+                    >
+                      Other
+                    </Label>
                   </div>
                 </RadioGroup>
               )}
             />
-            {errors.gender && <p className="text-sm text-destructive">{errors.gender.message as string}</p>}
+            {errors.gender && (
+              <p className="text-sm text-destructive">
+                {errors.gender.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="dateOfBirth">Date of Birth</Label>
             <Input id="dateOfBirth" type="date" {...register("dateOfBirth")} />
-            {errors.dateOfBirth && <p className="text-sm text-destructive">{errors.dateOfBirth.message as string}</p>}
+            {errors.dateOfBirth && (
+              <p className="text-sm text-destructive">
+                {errors.dateOfBirth.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="Create password" {...register("password")} />
-            {errors.password && <p className="text-sm text-destructive">{errors.password.message as string}</p>}
+            <Input
+              id="password"
+              type="password"
+              placeholder="Create password"
+              {...register("password")}
+            />
+            {errors.password && (
+              <p className="text-sm text-destructive">
+                {errors.password.message as string}
+              </p>
+            )}
           </div>
         </>
       )}
@@ -657,23 +917,56 @@ const RegistrationForm = ({
         <>
           <div className="space-y-2">
             <Label htmlFor="fullName">Full Name</Label>
-            <Input id="fullName" placeholder="Enter your full name" {...register("fullName")} />
-            {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message as string}</p>}
+            <Input
+              id="fullName"
+              placeholder="Enter your full name"
+              {...register("fullName")}
+            />
+            {errors.fullName && (
+              <p className="text-sm text-destructive">
+                {errors.fullName.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="student@college.edu" {...register("email")} />
-            {errors.email && <p className="text-sm text-destructive">{errors.email.message as string}</p>}
+            <Input
+              id="email"
+              type="email"
+              placeholder="student@college.edu"
+              {...register("email")}
+            />
+            {errors.email && (
+              <p className="text-sm text-destructive">
+                {errors.email.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="collegeId">College ID</Label>
-            <Input id="collegeId" placeholder="Your College ID" {...register("collegeId")} />
-            {errors.collegeId && <p className="text-sm text-destructive">{errors.collegeId.message as string}</p>}
+            <Input
+              id="collegeId"
+              placeholder="Your College ID"
+              {...register("collegeId")}
+            />
+            {errors.collegeId && (
+              <p className="text-sm text-destructive">
+                {errors.collegeId.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="semester">Semester</Label>
-            <Input id="semester" placeholder="e.g., 5" {...register("semester")} />
-            {errors.semester && <p className="text-sm text-destructive">{errors.semester.message as string}</p>}
+            <Input
+              id="semester"
+              placeholder="e.g., 5"
+              {...register("semester")}
+            />
+            {errors.semester && (
+              <p className="text-sm text-destructive">
+                {errors.semester.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="skills">Skills / Interests</Label>
@@ -681,11 +974,11 @@ const RegistrationForm = ({
               name="skills"
               control={control}
               render={({ field }) => (
-                <Select 
+                <Select
                   onValueChange={(value) => {
                     field.onChange(value);
                     setSelectedSkill(value);
-                  }} 
+                  }}
                   value={field.value}
                 >
                   <SelectTrigger>
@@ -705,10 +998,14 @@ const RegistrationForm = ({
                     <SelectItem value="Azure">Azure</SelectItem>
                     <SelectItem value="Docker">Docker</SelectItem>
                     <SelectItem value="Kubernetes">Kubernetes</SelectItem>
-                    <SelectItem value="Machine Learning">Machine Learning</SelectItem>
+                    <SelectItem value="Machine Learning">
+                      Machine Learning
+                    </SelectItem>
                     <SelectItem value="Data Science">Data Science</SelectItem>
                     <SelectItem value="UI/UX Design">UI/UX Design</SelectItem>
-                    <SelectItem value="Mobile Development">Mobile Development</SelectItem>
+                    <SelectItem value="Mobile Development">
+                      Mobile Development
+                    </SelectItem>
                     <SelectItem value="DevOps">DevOps</SelectItem>
                     <SelectItem value="Cybersecurity">Cybersecurity</SelectItem>
                     <SelectItem value="Others">Others</SelectItem>
@@ -716,15 +1013,19 @@ const RegistrationForm = ({
                 </Select>
               )}
             />
-            {errors.skills && <p className="text-sm text-destructive">{errors.skills.message as string}</p>}
+            {errors.skills && (
+              <p className="text-sm text-destructive">
+                {errors.skills.message as string}
+              </p>
+            )}
           </div>
           {selectedSkill === "Others" && (
             <div className="space-y-2">
               <Label htmlFor="otherSkill">Please specify your skill</Label>
-              <Input 
-                id="otherSkill" 
-                placeholder="Enter your skill" 
-                {...register("otherSkill")} 
+              <Input
+                id="otherSkill"
+                placeholder="Enter your skill"
+                {...register("otherSkill")}
               />
             </div>
           )}
@@ -734,33 +1035,69 @@ const RegistrationForm = ({
               name="gender"
               control={control}
               render={({ field }) => (
-                <RadioGroup onValueChange={field.onChange} value={field.value} className="flex gap-4">
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  className="flex gap-4"
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="male" id="student-male" />
-                    <Label htmlFor="student-male" className="cursor-pointer font-normal">Male</Label>
+                    <Label
+                      htmlFor="student-male"
+                      className="cursor-pointer font-normal"
+                    >
+                      Male
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="female" id="student-female" />
-                    <Label htmlFor="student-female" className="cursor-pointer font-normal">Female</Label>
+                    <Label
+                      htmlFor="student-female"
+                      className="cursor-pointer font-normal"
+                    >
+                      Female
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="other" id="student-other" />
-                    <Label htmlFor="student-other" className="cursor-pointer font-normal">Other</Label>
+                    <Label
+                      htmlFor="student-other"
+                      className="cursor-pointer font-normal"
+                    >
+                      Other
+                    </Label>
                   </div>
                 </RadioGroup>
               )}
             />
-            {errors.gender && <p className="text-sm text-destructive">{errors.gender.message as string}</p>}
+            {errors.gender && (
+              <p className="text-sm text-destructive">
+                {errors.gender.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="dateOfBirth">Date of Birth</Label>
             <Input id="dateOfBirth" type="date" {...register("dateOfBirth")} />
-            {errors.dateOfBirth && <p className="text-sm text-destructive">{errors.dateOfBirth.message as string}</p>}
+            {errors.dateOfBirth && (
+              <p className="text-sm text-destructive">
+                {errors.dateOfBirth.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="Create password" {...register("password")} />
-            {errors.password && <p className="text-sm text-destructive">{errors.password.message as string}</p>}
+            <Input
+              id="password"
+              type="password"
+              placeholder="Create password"
+              {...register("password")}
+            />
+            {errors.password && (
+              <p className="text-sm text-destructive">
+                {errors.password.message as string}
+              </p>
+            )}
           </div>
         </>
       )}
@@ -769,13 +1106,30 @@ const RegistrationForm = ({
         <>
           <div className="space-y-2">
             <Label htmlFor="companyName">Company Name</Label>
-            <Input id="companyName" placeholder="Your Company Name" {...register("companyName")} />
-            {errors.companyName && <p className="text-sm text-destructive">{errors.companyName.message as string}</p>}
+            <Input
+              id="companyName"
+              placeholder="Your Company Name"
+              {...register("companyName")}
+            />
+            {errors.companyName && (
+              <p className="text-sm text-destructive">
+                {errors.companyName.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="companyEmail">Company Email</Label>
-            <Input id="companyEmail" type="email" placeholder="contact@company.com" {...register("companyEmail")} />
-            {errors.companyEmail && <p className="text-sm text-destructive">{errors.companyEmail.message as string}</p>}
+            <Input
+              id="companyEmail"
+              type="email"
+              placeholder="contact@company.com"
+              {...register("companyEmail")}
+            />
+            {errors.companyEmail && (
+              <p className="text-sm text-destructive">
+                {errors.companyEmail.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="industryType">Industry Type</Label>
@@ -799,7 +1153,11 @@ const RegistrationForm = ({
                 </Select>
               )}
             />
-            {errors.industryType && <p className="text-sm text-destructive">{errors.industryType.message as string}</p>}
+            {errors.industryType && (
+              <p className="text-sm text-destructive">
+                {errors.industryType.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="companySize">Company Size</Label>
@@ -821,22 +1179,50 @@ const RegistrationForm = ({
                 </Select>
               )}
             />
-            {errors.companySize && <p className="text-sm text-destructive">{errors.companySize.message as string}</p>}
+            {errors.companySize && (
+              <p className="text-sm text-destructive">
+                {errors.companySize.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="contactPerson">Contact Person Name</Label>
-            <Input id="contactPerson" placeholder="Full name" {...register("contactPerson")} />
-            {errors.contactPerson && <p className="text-sm text-destructive">{errors.contactPerson.message as string}</p>}
+            <Input
+              id="contactPerson"
+              placeholder="Full name"
+              {...register("contactPerson")}
+            />
+            {errors.contactPerson && (
+              <p className="text-sm text-destructive">
+                {errors.contactPerson.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="contactNumber">Contact Number</Label>
-            <Input id="contactNumber" placeholder="+1234567890" {...register("contactNumber")} />
-            {errors.contactNumber && <p className="text-sm text-destructive">{errors.contactNumber.message as string}</p>}
+            <Input
+              id="contactNumber"
+              placeholder="+1234567890"
+              {...register("contactNumber")}
+            />
+            {errors.contactNumber && (
+              <p className="text-sm text-destructive">
+                {errors.contactNumber.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="designation">Designation</Label>
-            <Input id="designation" placeholder="e.g., HR Manager" {...register("designation")} />
-            {errors.designation && <p className="text-sm text-destructive">{errors.designation.message as string}</p>}
+            <Input
+              id="designation"
+              placeholder="e.g., HR Manager"
+              {...register("designation")}
+            />
+            {errors.designation && (
+              <p className="text-sm text-destructive">
+                {errors.designation.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label>Gender</Label>
@@ -844,48 +1230,100 @@ const RegistrationForm = ({
               name="gender"
               control={control}
               render={({ field }) => (
-                <RadioGroup onValueChange={field.onChange} value={field.value} className="flex gap-4">
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  className="flex gap-4"
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="male" id="industry-male" />
-                    <Label htmlFor="industry-male" className="cursor-pointer font-normal">Male</Label>
+                    <Label
+                      htmlFor="industry-male"
+                      className="cursor-pointer font-normal"
+                    >
+                      Male
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="female" id="industry-female" />
-                    <Label htmlFor="industry-female" className="cursor-pointer font-normal">Female</Label>
+                    <Label
+                      htmlFor="industry-female"
+                      className="cursor-pointer font-normal"
+                    >
+                      Female
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="other" id="industry-other" />
-                    <Label htmlFor="industry-other" className="cursor-pointer font-normal">Other</Label>
+                    <Label
+                      htmlFor="industry-other"
+                      className="cursor-pointer font-normal"
+                    >
+                      Other
+                    </Label>
                   </div>
                 </RadioGroup>
               )}
             />
-            {errors.gender && <p className="text-sm text-destructive">{errors.gender.message as string}</p>}
+            {errors.gender && (
+              <p className="text-sm text-destructive">
+                {errors.gender.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="dateOfBirth">Date of Birth</Label>
             <Input id="dateOfBirth" type="date" {...register("dateOfBirth")} />
-            {errors.dateOfBirth && <p className="text-sm text-destructive">{errors.dateOfBirth.message as string}</p>}
+            {errors.dateOfBirth && (
+              <p className="text-sm text-destructive">
+                {errors.dateOfBirth.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="city">City / Location</Label>
             <Input id="city" placeholder="City name" {...register("city")} />
-            {errors.city && <p className="text-sm text-destructive">{errors.city.message as string}</p>}
+            {errors.city && (
+              <p className="text-sm text-destructive">
+                {errors.city.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="state">State</Label>
             <Input id="state" placeholder="State name" {...register("state")} />
-            {errors.state && <p className="text-sm text-destructive">{errors.state.message as string}</p>}
+            {errors.state && (
+              <p className="text-sm text-destructive">
+                {errors.state.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="country">Country</Label>
-            <Input id="country" placeholder="Country name" {...register("country")} />
-            {errors.country && <p className="text-sm text-destructive">{errors.country.message as string}</p>}
+            <Input
+              id="country"
+              placeholder="Country name"
+              {...register("country")}
+            />
+            {errors.country && (
+              <p className="text-sm text-destructive">
+                {errors.country.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="website">Company Website</Label>
-            <Input id="website" type="url" placeholder="https://company.com" {...register("website")} />
-            {errors.website && <p className="text-sm text-destructive">{errors.website.message as string}</p>}
+            <Input
+              id="website"
+              type="url"
+              placeholder="https://company.com"
+              {...register("website")}
+            />
+            {errors.website && (
+              <p className="text-sm text-destructive">
+                {errors.website.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="logo">Company Logo (Optional)</Label>
@@ -897,19 +1335,43 @@ const RegistrationForm = ({
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="Create password" {...register("password")} />
-            {errors.password && <p className="text-sm text-destructive">{errors.password.message as string}</p>}
+            <Input
+              id="password"
+              type="password"
+              placeholder="Create password"
+              {...register("password")}
+            />
+            {errors.password && (
+              <p className="text-sm text-destructive">
+                {errors.password.message as string}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input id="confirmPassword" type="password" placeholder="Confirm password" {...register("confirmPassword")} />
-            {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword.message as string}</p>}
+            <Input
+              id="confirmPassword"
+              type="password"
+              placeholder="Confirm password"
+              {...register("confirmPassword")}
+            />
+            {errors.confirmPassword && (
+              <p className="text-sm text-destructive">
+                {errors.confirmPassword.message as string}
+              </p>
+            )}
           </div>
         </>
       )}
 
       <div className="flex gap-3 pt-4">
-        <Button type="button" variant="outline" onClick={onBack} className="flex-1" disabled={loading}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onBack}
+          className="flex-1"
+          disabled={loading}
+        >
           Back to Login
         </Button>
         <Button type="submit" className="flex-1" size="lg" disabled={loading}>
