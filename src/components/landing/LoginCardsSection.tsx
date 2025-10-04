@@ -462,35 +462,68 @@ const LoginForm = ({
     } else if (portal.id === "admin") {
       setLoading(true);
       const DUMMY = { email: "admin@campus.com", password: "Admin@123" };
-      console.log("Admin login attempt:", {
+
+      console.log("🔐 Admin login attempt:", {
+        timestamp: new Date().toISOString(),
         inputEmail: data.email,
-        inputPassword: data.password,
+        inputPassword: data.password ? "[PROVIDED]" : "[MISSING]",
         expectedEmail: DUMMY.email,
-        expectedPassword: DUMMY.password,
+        expectedPassword: "[HIDDEN]",
       });
+
       setTimeout(() => {
         const email = String(data.email || "")
           .trim()
           .toLowerCase();
-        console.log("Comparing admin credentials:", {
-          email,
-          dummyEmail: DUMMY.email,
+        const password = String(data.password || "");
+
+        console.log("🔍 Comparing admin credentials:", {
+          inputEmail: email,
+          expectedEmail: DUMMY.email,
           emailMatch: email === DUMMY.email,
-          passwordMatch: data.password === DUMMY.password,
+          passwordMatch: password === DUMMY.password,
+          emailLength: email.length,
+          passwordLength: password.length,
         });
-        if (email === DUMMY.email && data.password === DUMMY.password) {
-          console.log("Admin login successful, setting localStorage");
+
+        if (email === DUMMY.email && password === DUMMY.password) {
+          console.log("✅ Admin login successful, setting localStorage");
+
+          // Clear any existing admin data first
+          localStorage.removeItem("admin_logged_in");
+          localStorage.removeItem("admin_email");
+
+          // Set new admin data
           localStorage.setItem("admin_logged_in", "true");
           localStorage.setItem("admin_email", String(data.email));
-          console.log("localStorage set:", {
+
+          // Verify localStorage was set
+          const verification = {
             admin_logged_in: localStorage.getItem("admin_logged_in"),
             admin_email: localStorage.getItem("admin_email"),
-          });
-          toast.success("Welcome to Admin Dashboard!");
-          navigate("/admin-dashboard");
+            timestamp: new Date().toISOString(),
+          };
+
+          console.log("✅ localStorage verification:", verification);
+
+          toast.success("🎉 Welcome to Admin Dashboard!");
+
+          // Navigate with a small delay to ensure localStorage is set
+          setTimeout(() => {
+            console.log("🚀 Navigating to /admin-dashboard");
+            navigate("/admin-dashboard");
+          }, 100);
         } else {
-          console.log("Admin login failed");
-          toast.error("Invalid credentials. Use admin@campus.com / Admin@123");
+          console.log("❌ Admin login failed - credential mismatch");
+          console.log("❌ Failed because:", {
+            emailMismatch: email !== DUMMY.email,
+            passwordMismatch: password !== DUMMY.password,
+            providedEmail: email,
+            providedPasswordLength: password.length,
+          });
+          toast.error(
+            "❌ Invalid credentials. Use admin@campus.com / Admin@123"
+          );
         }
         setLoading(false);
       }, 500);

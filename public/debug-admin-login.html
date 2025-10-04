@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login Debug Tool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 8px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        .btn:hover { background: #45a049; }
+        .btn.danger { background: #f44336; }
+        .btn.danger:hover { background: #da190b; }
+        .btn.primary { background: #2196F3; }
+        .btn.primary:hover { background: #0b7dda; }
+        .debug-output {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status.success { background: rgba(76, 175, 80, 0.3); }
+        .status.error { background: rgba(244, 67, 54, 0.3); }
+        .status.info { background: rgba(33, 150, 243, 0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Admin Login Debug Tool</h1>
+        <p>Use this tool to test and debug the admin login functionality.</p>
+        
+        <div class="status info">
+            <strong>Demo Credentials:</strong><br>
+            Email: admin@campus.com<br>
+            Password: Admin@123
+        </div>
+
+        <h3>🔧 Quick Actions</h3>
+        <button class="btn primary" onclick="setAdminLogin()">✅ Set Admin Login (Manual)</button>
+        <button class="btn danger" onclick="clearAllStorage()">🗑️ Clear All localStorage</button>
+        <button class="btn" onclick="checkCurrentStatus()">🔍 Check Current Status</button>
+        <button class="btn" onclick="goToAdminDashboard()">🚀 Go to Admin Dashboard</button>
+        <button class="btn" onclick="goToHome()">🏠 Go to Home</button>
+
+        <h3>📊 Current Status</h3>
+        <div id="status-display" class="debug-output">Click "Check Current Status" to see current state...</div>
+
+        <h3>🔧 Manual localStorage Control</h3>
+        <input type="text" id="email-input" placeholder="Enter email" value="admin@campus.com" style="padding: 8px; margin: 5px; border: none; border-radius: 4px;">
+        <br>
+        <button class="btn" onclick="setCustomAdmin()">Set Custom Admin</button>
+
+        <h3>📝 Debug Log</h3>
+        <div id="debug-log" class="debug-output">Debug messages will appear here...</div>
+
+        <button class="btn" onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('debug-log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.textContent += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function setAdminLogin() {
+            try {
+                localStorage.setItem('admin_logged_in', 'true');
+                localStorage.setItem('admin_email', 'admin@campus.com');
+                log('✅ Admin login set successfully');
+                checkCurrentStatus();
+                
+                // Show success message
+                const statusDiv = document.getElementById('status-display');
+                statusDiv.innerHTML = '<div class="status success">✅ Admin login credentials set successfully!</div>';
+            } catch (error) {
+                log('❌ Error setting admin login: ' + error.message);
+            }
+        }
+
+        function setCustomAdmin() {
+            const email = document.getElementById('email-input').value;
+            if (!email) {
+                log('❌ Please enter an email');
+                return;
+            }
+            try {
+                localStorage.setItem('admin_logged_in', 'true');
+                localStorage.setItem('admin_email', email);
+                log(`✅ Custom admin login set: ${email}`);
+                checkCurrentStatus();
+            } catch (error) {
+                log('❌ Error setting custom admin: ' + error.message);
+            }
+        }
+
+        function clearAllStorage() {
+            try {
+                localStorage.clear();
+                log('🗑️ All localStorage cleared');
+                checkCurrentStatus();
+                
+                const statusDiv = document.getElementById('status-display');
+                statusDiv.innerHTML = '<div class="status error">🗑️ All localStorage data cleared</div>';
+            } catch (error) {
+                log('❌ Error clearing storage: ' + error.message);
+            }
+        }
+
+        function checkCurrentStatus() {
+            try {
+                const status = {
+                    timestamp: new Date().toISOString(),
+                    currentURL: window.location.href,
+                    localStorage: {
+                        admin_logged_in: localStorage.getItem('admin_logged_in'),
+                        admin_email: localStorage.getItem('admin_email'),
+                        allKeys: Object.keys(localStorage),
+                        totalItems: localStorage.length
+                    },
+                    checks: {
+                        isLoggedIn: localStorage.getItem('admin_logged_in') === 'true',
+                        hasEmail: !!localStorage.getItem('admin_email'),
+                        isAuthenticated: localStorage.getItem('admin_logged_in') === 'true' && !!localStorage.getItem('admin_email')
+                    }
+                };
+
+                const statusDiv = document.getElementById('status-display');
+                statusDiv.textContent = JSON.stringify(status, null, 2);
+                
+                log('🔍 Current status checked');
+                
+                if (status.checks.isAuthenticated) {
+                    statusDiv.style.background = 'rgba(76, 175, 80, 0.3)';
+                    log('✅ Admin is authenticated');
+                } else {
+                    statusDiv.style.background = 'rgba(244, 67, 54, 0.3)';
+                    log('❌ Admin is NOT authenticated');
+                }
+            } catch (error) {
+                log('❌ Error checking status: ' + error.message);
+            }
+        }
+
+        function goToAdminDashboard() {
+            log('🚀 Navigating to admin dashboard...');
+            window.open('http://localhost:8080/admin-dashboard', '_blank');
+        }
+
+        function goToHome() {
+            log('🏠 Navigating to home...');
+            window.open('http://localhost:8080/', '_blank');
+        }
+
+        function clearLog() {
+            document.getElementById('debug-log').textContent = '';
+            log('Debug tool initialized');
+        }
+
+        // Initialize
+        log('🛡️ Admin Login Debug Tool loaded');
+        log('Use the buttons above to test admin login functionality');
+        checkCurrentStatus();
+    </script>
+</body>
+</html>
