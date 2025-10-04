@@ -1,6 +1,21 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { User, Edit, Save, Camera, Shield, Key, Bell, Globe, Moon, Sun, Lock, Mail, Phone, Calendar } from 'lucide-react';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  User,
+  Edit,
+  Save,
+  Camera,
+  Shield,
+  Key,
+  Bell,
+  Globe,
+  Moon,
+  Sun,
+  Lock,
+  Mail,
+  Phone,
+  Calendar,
+} from "lucide-react";
 
 interface AdminProfile {
   id: string;
@@ -14,7 +29,7 @@ interface AdminProfile {
   avatar: string;
   permissions: string[];
   preferences: {
-    theme: 'light' | 'dark' | 'auto';
+    theme: "light" | "dark" | "auto";
     notifications: boolean;
     emailUpdates: boolean;
     language: string;
@@ -31,108 +46,110 @@ interface AdminProfileCardProps {
 const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
   adminProfile,
   setAdminProfile,
-  playSuccessSound
+  playSuccessSound,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'preferences'>('profile');
+  const [activeTab, setActiveTab] = useState<
+    "profile" | "security" | "preferences"
+  >("profile");
   const [formData, setFormData] = useState({
     name: adminProfile.name,
     email: adminProfile.email,
     phone: adminProfile.phone,
-    department: adminProfile.department
+    department: adminProfile.department,
   });
   const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
   const [preferences, setPreferences] = useState(adminProfile.preferences);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const handlePreferenceChange = (field: string, value: string | boolean) => {
-    setPreferences(prev => ({
+    setPreferences((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const saveProfile = () => {
-    setAdminProfile(prev => ({
+    setAdminProfile((prev) => ({
       ...prev,
       ...formData,
-      preferences
+      preferences,
     }));
 
     // Save to localStorage
     const updatedProfile = {
       ...adminProfile,
       ...formData,
-      preferences
+      preferences,
     };
-    localStorage.setItem('adminProfile', JSON.stringify(updatedProfile));
+    localStorage.setItem("adminProfile", JSON.stringify(updatedProfile));
 
     setIsEditing(false);
     playSuccessSound();
-    console.log('✅ Admin profile updated');
+    console.log("✅ Admin profile updated");
   };
 
   const changePassword = () => {
     if (!passwordData.currentPassword || !passwordData.newPassword) {
-      alert('Please fill in all password fields');
+      alert("Please fill in all password fields");
       return;
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('New passwords do not match');
+      alert("New passwords do not match");
       return;
     }
 
     if (passwordData.newPassword.length < 8) {
-      alert('Password must be at least 8 characters long');
+      alert("Password must be at least 8 characters long");
       return;
     }
 
     // In real app, verify current password with backend
-    if (passwordData.currentPassword !== 'Admin@123') {
-      alert('Current password is incorrect');
+    if (passwordData.currentPassword !== "Admin@123") {
+      alert("Current password is incorrect");
       return;
     }
 
     // Save new password (in real app, hash and store securely)
-    localStorage.setItem('adminPassword', passwordData.newPassword);
-    
+    localStorage.setItem("adminPassword", passwordData.newPassword);
+
     setPasswordData({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: ''
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
     });
 
     playSuccessSound();
-    alert('Password changed successfully');
-    console.log('🔒 Password updated');
+    alert("Password changed successfully");
+    console.log("🔒 Password updated");
   };
 
   const uploadAvatar = () => {
     // Simulate file upload
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
           const avatar = e.target?.result as string;
-          setAdminProfile(prev => ({ ...prev, avatar }));
-          localStorage.setItem('adminAvatar', avatar);
+          setAdminProfile((prev) => ({ ...prev, avatar }));
+          localStorage.setItem("adminAvatar", avatar);
           playSuccessSound();
-          console.log('📷 Avatar updated');
+          console.log("📷 Avatar updated");
         };
         reader.readAsDataURL(file);
       }
@@ -142,10 +159,14 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
 
   const getThemeIcon = (theme: string) => {
     switch (theme) {
-      case 'light': return <Sun className="w-4 h-4" />;
-      case 'dark': return <Moon className="w-4 h-4" />;
-      case 'auto': return <Globe className="w-4 h-4" />;
-      default: return <Sun className="w-4 h-4" />;
+      case "light":
+        return <Sun className="w-4 h-4" />;
+      case "dark":
+        return <Moon className="w-4 h-4" />;
+      case "auto":
+        return <Globe className="w-4 h-4" />;
+      default:
+        return <Sun className="w-4 h-4" />;
     }
   };
 
@@ -156,7 +177,11 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
         <div className="relative">
           <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
             {adminProfile.avatar ? (
-              <img src={adminProfile.avatar} alt="Avatar" className="w-full h-full rounded-full object-cover" />
+              <img
+                src={adminProfile.avatar}
+                alt="Avatar"
+                className="w-full h-full rounded-full object-cover"
+              />
             ) : (
               adminProfile.name.charAt(0).toUpperCase()
             )}
@@ -180,59 +205,67 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
       {/* Profile Fields */}
       <div className="space-y-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Full Name
+          </label>
           <input
             type="text"
             value={formData.name}
-            onChange={(e) => handleInputChange('name', e.target.value)}
+            onChange={(e) => handleInputChange("name", e.target.value)}
             disabled={!isEditing}
             className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              !isEditing ? 'bg-gray-50' : ''
+              !isEditing ? "bg-gray-50" : ""
             }`}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Email
+          </label>
           <div className="relative">
             <Mail className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="email"
               value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
+              onChange={(e) => handleInputChange("email", e.target.value)}
               disabled={!isEditing}
               className={`w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                !isEditing ? 'bg-gray-50' : ''
+                !isEditing ? "bg-gray-50" : ""
               }`}
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Phone
+          </label>
           <div className="relative">
             <Phone className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="tel"
               value={formData.phone}
-              onChange={(e) => handleInputChange('phone', e.target.value)}
+              onChange={(e) => handleInputChange("phone", e.target.value)}
               disabled={!isEditing}
               className={`w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                !isEditing ? 'bg-gray-50' : ''
+                !isEditing ? "bg-gray-50" : ""
               }`}
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Department
+          </label>
           <input
             type="text"
             value={formData.department}
-            onChange={(e) => handleInputChange('department', e.target.value)}
+            onChange={(e) => handleInputChange("department", e.target.value)}
             disabled={!isEditing}
             className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              !isEditing ? 'bg-gray-50' : ''
+              !isEditing ? "bg-gray-50" : ""
             }`}
           />
         </div>
@@ -245,7 +278,9 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
             <Calendar className="w-4 h-4 text-blue-600 mr-2" />
             <div>
               <div className="text-xs text-blue-600 font-medium">Joined</div>
-              <div className="text-sm text-blue-800">{new Date(adminProfile.joinDate).toLocaleDateString()}</div>
+              <div className="text-sm text-blue-800">
+                {new Date(adminProfile.joinDate).toLocaleDateString()}
+              </div>
             </div>
           </div>
         </div>
@@ -253,8 +288,12 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
           <div className="flex items-center">
             <Shield className="w-4 h-4 text-green-600 mr-2" />
             <div>
-              <div className="text-xs text-green-600 font-medium">Last Login</div>
-              <div className="text-sm text-green-800">{new Date(adminProfile.lastLogin).toLocaleDateString()}</div>
+              <div className="text-xs text-green-600 font-medium">
+                Last Login
+              </div>
+              <div className="text-sm text-green-800">
+                {new Date(adminProfile.lastLogin).toLocaleDateString()}
+              </div>
             </div>
           </div>
         </div>
@@ -262,7 +301,9 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
 
       {/* Permissions */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Permissions</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Permissions
+        </label>
         <div className="flex flex-wrap gap-2">
           {adminProfile.permissions.map((permission, index) => (
             <span
@@ -283,41 +324,66 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
         <div className="flex items-center">
           <Lock className="w-5 h-5 text-yellow-600 mr-2" />
           <div>
-            <h4 className="text-sm font-semibold text-yellow-800">Security Settings</h4>
-            <p className="text-xs text-yellow-700">Manage your account security and password</p>
+            <h4 className="text-sm font-semibold text-yellow-800">
+              Security Settings
+            </h4>
+            <p className="text-xs text-yellow-700">
+              Manage your account security and password
+            </p>
           </div>
         </div>
       </div>
 
       <div className="space-y-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Current Password
+          </label>
           <input
             type="password"
             value={passwordData.currentPassword}
-            onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
+            onChange={(e) =>
+              setPasswordData((prev) => ({
+                ...prev,
+                currentPassword: e.target.value,
+              }))
+            }
             placeholder="Enter current password"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            New Password
+          </label>
           <input
             type="password"
             value={passwordData.newPassword}
-            onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+            onChange={(e) =>
+              setPasswordData((prev) => ({
+                ...prev,
+                newPassword: e.target.value,
+              }))
+            }
             placeholder="Enter new password"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Confirm New Password
+          </label>
           <input
             type="password"
             value={passwordData.confirmPassword}
-            onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+            onChange={(e) =>
+              setPasswordData((prev) => ({
+                ...prev,
+                confirmPassword: e.target.value,
+              }))
+            }
             placeholder="Confirm new password"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
@@ -335,7 +401,9 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
 
       {/* Security Info */}
       <div className="bg-gray-50 p-4 rounded-lg">
-        <h4 className="text-sm font-semibold text-gray-800 mb-2">Password Requirements</h4>
+        <h4 className="text-sm font-semibold text-gray-800 mb-2">
+          Password Requirements
+        </h4>
         <ul className="text-xs text-gray-600 space-y-1">
           <li>• At least 8 characters long</li>
           <li>• Include uppercase and lowercase letters</li>
@@ -349,20 +417,22 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
   const renderPreferencesTab = () => (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Theme</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Theme
+        </label>
         <div className="flex space-x-2">
           {[
-            { key: 'light', label: 'Light' },
-            { key: 'dark', label: 'Dark' },
-            { key: 'auto', label: 'Auto' }
+            { key: "light", label: "Light" },
+            { key: "dark", label: "Dark" },
+            { key: "auto", label: "Auto" },
           ].map((theme) => (
             <button
               key={theme.key}
-              onClick={() => handlePreferenceChange('theme', theme.key)}
+              onClick={() => handlePreferenceChange("theme", theme.key)}
               className={`flex items-center px-3 py-2 rounded-lg border transition ${
                 preferences.theme === theme.key
-                  ? 'border-blue-500 bg-blue-50 text-blue-700'
-                  : 'border-gray-300 hover:bg-gray-50'
+                  ? "border-blue-500 bg-blue-50 text-blue-700"
+                  : "border-gray-300 hover:bg-gray-50"
               }`}
             >
               {getThemeIcon(theme.key)}
@@ -373,10 +443,12 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Language
+        </label>
         <select
           value={preferences.language}
-          onChange={(e) => handlePreferenceChange('language', e.target.value)}
+          onChange={(e) => handlePreferenceChange("language", e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option value="en">English</option>
@@ -387,10 +459,12 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Timezone
+        </label>
         <select
           value={preferences.timezone}
-          onChange={(e) => handlePreferenceChange('timezone', e.target.value)}
+          onChange={(e) => handlePreferenceChange("timezone", e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option value="Asia/Kolkata">India Standard Time (IST)</option>
@@ -404,17 +478,24 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Bell className="w-4 h-4 text-gray-600 mr-2" />
-            <span className="text-sm font-medium text-gray-700">Push Notifications</span>
+            <span className="text-sm font-medium text-gray-700">
+              Push Notifications
+            </span>
           </div>
           <button
-            onClick={() => handlePreferenceChange('notifications', !preferences.notifications)}
+            onClick={() =>
+              handlePreferenceChange(
+                "notifications",
+                !preferences.notifications
+              )
+            }
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
-              preferences.notifications ? 'bg-blue-600' : 'bg-gray-200'
+              preferences.notifications ? "bg-blue-600" : "bg-gray-200"
             }`}
           >
             <span
               className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                preferences.notifications ? 'translate-x-6' : 'translate-x-1'
+                preferences.notifications ? "translate-x-6" : "translate-x-1"
               }`}
             />
           </button>
@@ -423,17 +504,21 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Mail className="w-4 h-4 text-gray-600 mr-2" />
-            <span className="text-sm font-medium text-gray-700">Email Updates</span>
+            <span className="text-sm font-medium text-gray-700">
+              Email Updates
+            </span>
           </div>
           <button
-            onClick={() => handlePreferenceChange('emailUpdates', !preferences.emailUpdates)}
+            onClick={() =>
+              handlePreferenceChange("emailUpdates", !preferences.emailUpdates)
+            }
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
-              preferences.emailUpdates ? 'bg-blue-600' : 'bg-gray-200'
+              preferences.emailUpdates ? "bg-blue-600" : "bg-gray-200"
             }`}
           >
             <span
               className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                preferences.emailUpdates ? 'translate-x-6' : 'translate-x-1'
+                preferences.emailUpdates ? "translate-x-6" : "translate-x-1"
               }`}
             />
           </button>
@@ -454,11 +539,13 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
           <User className="w-8 h-8 text-indigo-600 mr-3" />
           <div>
             <h3 className="text-lg font-semibold">Admin Profile</h3>
-            <p className="text-sm text-gray-600">Manage your account settings and preferences</p>
+            <p className="text-sm text-gray-600">
+              Manage your account settings and preferences
+            </p>
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          {activeTab === 'profile' && (
+          {activeTab === "profile" && (
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -471,12 +558,16 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
               }}
               className={`flex items-center px-3 py-1 rounded-lg transition text-sm ${
                 isEditing
-                  ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                  : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                  ? "bg-green-100 text-green-700 hover:bg-green-200"
+                  : "bg-blue-100 text-blue-700 hover:bg-blue-200"
               }`}
             >
-              {isEditing ? <Save className="w-4 h-4 mr-1" /> : <Edit className="w-4 h-4 mr-1" />}
-              {isEditing ? 'Save' : 'Edit'}
+              {isEditing ? (
+                <Save className="w-4 h-4 mr-1" />
+              ) : (
+                <Edit className="w-4 h-4 mr-1" />
+              )}
+              {isEditing ? "Save" : "Edit"}
             </motion.button>
           )}
         </div>
@@ -485,17 +576,17 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
       {/* Tabs */}
       <div className="flex space-x-1 mb-4 bg-gray-100 rounded-lg p-1">
         {[
-          { key: 'profile', label: 'Profile', icon: User },
-          { key: 'security', label: 'Security', icon: Shield },
-          { key: 'preferences', label: 'Preferences', icon: Bell }
+          { key: "profile", label: "Profile", icon: User },
+          { key: "security", label: "Security", icon: Shield },
+          { key: "preferences", label: "Preferences", icon: Bell },
         ].map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key as typeof activeTab)}
             className={`flex-1 flex items-center justify-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
               activeTab === tab.key
-                ? 'bg-white shadow-sm text-blue-600'
-                : 'text-gray-600 hover:text-gray-800'
+                ? "bg-white shadow-sm text-blue-600"
+                : "text-gray-600 hover:text-gray-800"
             }`}
           >
             <tab.icon className="w-4 h-4 mr-1" />
@@ -506,9 +597,9 @@ const AdminProfileCard: React.FC<AdminProfileCardProps> = ({
 
       {/* Content */}
       <div className="max-h-80 overflow-y-auto">
-        {activeTab === 'profile' && renderProfileTab()}
-        {activeTab === 'security' && renderSecurityTab()}
-        {activeTab === 'preferences' && renderPreferencesTab()}
+        {activeTab === "profile" && renderProfileTab()}
+        {activeTab === "security" && renderSecurityTab()}
+        {activeTab === "preferences" && renderPreferencesTab()}
       </div>
     </motion.div>
   );

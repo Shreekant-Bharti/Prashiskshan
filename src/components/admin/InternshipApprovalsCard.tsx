@@ -1,6 +1,14 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Briefcase, CheckCircle, XCircle, Clock, Eye, Download, AlertCircle } from 'lucide-react';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Briefcase,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Eye,
+  Download,
+  AlertCircle,
+} from "lucide-react";
 
 interface InternshipApplication {
   id: number;
@@ -12,18 +20,24 @@ interface InternshipApplication {
   startDate: string;
   stipend: number;
   documents: string[];
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
   submissionDate: string;
-  priority: 'high' | 'medium' | 'low';
+  priority: "high" | "medium" | "low";
 }
 
 interface InternshipApprovalsCardProps {
   pendingApplications: InternshipApplication[];
-  setPendingApplications: React.Dispatch<React.SetStateAction<InternshipApplication[]>>;
+  setPendingApplications: React.Dispatch<
+    React.SetStateAction<InternshipApplication[]>
+  >;
   approvedApplications: InternshipApplication[];
-  setApprovedApplications: React.Dispatch<React.SetStateAction<InternshipApplication[]>>;
+  setApprovedApplications: React.Dispatch<
+    React.SetStateAction<InternshipApplication[]>
+  >;
   rejectedApplications: InternshipApplication[];
-  setRejectedApplications: React.Dispatch<React.SetStateAction<InternshipApplication[]>>;
+  setRejectedApplications: React.Dispatch<
+    React.SetStateAction<InternshipApplication[]>
+  >;
   playSuccessSound: () => void;
 }
 
@@ -34,65 +48,99 @@ const InternshipApprovalsCard: React.FC<InternshipApprovalsCardProps> = ({
   setApprovedApplications,
   rejectedApplications,
   setRejectedApplications,
-  playSuccessSound
+  playSuccessSound,
 }) => {
-  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending');
-  const [selectedApplication, setSelectedApplication] = useState<InternshipApplication | null>(null);
+  const [activeTab, setActiveTab] = useState<
+    "pending" | "approved" | "rejected"
+  >("pending");
+  const [selectedApplication, setSelectedApplication] =
+    useState<InternshipApplication | null>(null);
 
   const handleApprove = (application: InternshipApplication) => {
     // Remove from pending
-    setPendingApplications(prev => prev.filter(app => app.id !== application.id));
-    
+    setPendingApplications((prev) =>
+      prev.filter((app) => app.id !== application.id)
+    );
+
     // Add to approved with updated status
-    const approvedApp = { ...application, status: 'approved' as const };
-    setApprovedApplications(prev => [...prev, approvedApp]);
-    
+    const approvedApp = { ...application, status: "approved" as const };
+    setApprovedApplications((prev) => [...prev, approvedApp]);
+
     playSuccessSound();
-    
+
     // Store in localStorage
-    const approvedList = JSON.parse(localStorage.getItem('approvedInternships') || '[]');
+    const approvedList = JSON.parse(
+      localStorage.getItem("approvedInternships") || "[]"
+    );
     approvedList.push(approvedApp);
-    localStorage.setItem('approvedInternships', JSON.stringify(approvedList));
-    
-    console.log('🎉 Internship approved:', application.studentName, 'at', application.companyName);
+    localStorage.setItem("approvedInternships", JSON.stringify(approvedList));
+
+    console.log(
+      "🎉 Internship approved:",
+      application.studentName,
+      "at",
+      application.companyName
+    );
   };
 
-  const handleReject = (application: InternshipApplication, reason: string = 'No reason provided') => {
+  const handleReject = (
+    application: InternshipApplication,
+    reason: string = "No reason provided"
+  ) => {
     // Remove from pending
-    setPendingApplications(prev => prev.filter(app => app.id !== application.id));
-    
+    setPendingApplications((prev) =>
+      prev.filter((app) => app.id !== application.id)
+    );
+
     // Add to rejected with updated status and reason
-    const rejectedApp = { ...application, status: 'rejected' as const, rejectionReason: reason };
-    setRejectedApplications(prev => [...prev, rejectedApp]);
-    
+    const rejectedApp = {
+      ...application,
+      status: "rejected" as const,
+      rejectionReason: reason,
+    };
+    setRejectedApplications((prev) => [...prev, rejectedApp]);
+
     playSuccessSound();
-    
+
     // Store in localStorage
-    const rejectedList = JSON.parse(localStorage.getItem('rejectedInternships') || '[]');
+    const rejectedList = JSON.parse(
+      localStorage.getItem("rejectedInternships") || "[]"
+    );
     rejectedList.push(rejectedApp);
-    localStorage.setItem('rejectedInternships', JSON.stringify(rejectedList));
-    
-    console.log('❌ Internship rejected:', application.studentName, 'at', application.companyName, 'Reason:', reason);
+    localStorage.setItem("rejectedInternships", JSON.stringify(rejectedList));
+
+    console.log(
+      "❌ Internship rejected:",
+      application.studentName,
+      "at",
+      application.companyName,
+      "Reason:",
+      reason
+    );
   };
 
   const viewDocument = (docName: string) => {
     // Simulate document viewing
-    window.open(`/documents/${docName}`, '_blank');
-    console.log('📄 Viewing document:', docName);
+    window.open(`/documents/${docName}`, "_blank");
+    console.log("📄 Viewing document:", docName);
   };
 
   const downloadDocument = (docName: string) => {
     // Simulate document download
-    console.log('⬇️ Downloading document:', docName);
+    console.log("⬇️ Downloading document:", docName);
     // In real implementation, this would trigger actual download
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'text-red-600 bg-red-50';
-      case 'medium': return 'text-yellow-600 bg-yellow-50';
-      case 'low': return 'text-green-600 bg-green-50';
-      default: return 'text-gray-600 bg-gray-50';
+      case "high":
+        return "text-red-600 bg-red-50";
+      case "medium":
+        return "text-yellow-600 bg-yellow-50";
+      case "low":
+        return "text-green-600 bg-green-50";
+      default:
+        return "text-gray-600 bg-gray-50";
     }
   };
 
@@ -114,17 +162,30 @@ const InternshipApprovalsCard: React.FC<InternshipApprovalsCardProps> = ({
           >
             <div className="flex justify-between items-start mb-3">
               <div>
-                <h4 className="font-semibold text-gray-800">{application.studentName}</h4>
-                <p className="text-sm text-gray-600">ID: {application.studentId}</p>
-                <p className="text-sm font-medium text-blue-600">{application.position}</p>
-                <p className="text-sm text-gray-600">{application.companyName}</p>
+                <h4 className="font-semibold text-gray-800">
+                  {application.studentName}
+                </h4>
+                <p className="text-sm text-gray-600">
+                  ID: {application.studentId}
+                </p>
+                <p className="text-sm font-medium text-blue-600">
+                  {application.position}
+                </p>
+                <p className="text-sm text-gray-600">
+                  {application.companyName}
+                </p>
               </div>
               <div className="text-right">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(application.priority)}`}>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                    application.priority
+                  )}`}
+                >
                   {application.priority} priority
                 </span>
                 <p className="text-xs text-gray-500 mt-1">
-                  Submitted: {new Date(application.submissionDate).toLocaleDateString()}
+                  Submitted:{" "}
+                  {new Date(application.submissionDate).toLocaleDateString()}
                 </p>
               </div>
             </div>
@@ -136,15 +197,21 @@ const InternshipApprovalsCard: React.FC<InternshipApprovalsCardProps> = ({
               </div>
               <div>
                 <span className="text-gray-500">Start Date:</span>
-                <span className="ml-2 font-medium">{application.startDate}</span>
+                <span className="ml-2 font-medium">
+                  {application.startDate}
+                </span>
               </div>
               <div>
                 <span className="text-gray-500">Stipend:</span>
-                <span className="ml-2 font-medium">₹{application.stipend.toLocaleString()}</span>
+                <span className="ml-2 font-medium">
+                  ₹{application.stipend.toLocaleString()}
+                </span>
               </div>
               <div>
                 <span className="text-gray-500">Documents:</span>
-                <span className="ml-2 font-medium">{application.documents.length} files</span>
+                <span className="ml-2 font-medium">
+                  {application.documents.length} files
+                </span>
               </div>
             </div>
 
@@ -153,7 +220,10 @@ const InternshipApprovalsCard: React.FC<InternshipApprovalsCardProps> = ({
               <p className="text-xs text-gray-500 mb-2">Documents:</p>
               <div className="flex flex-wrap gap-2">
                 {application.documents.map((doc, index) => (
-                  <div key={index} className="flex items-center bg-white rounded px-2 py-1 border">
+                  <div
+                    key={index}
+                    className="flex items-center bg-white rounded px-2 py-1 border"
+                  >
                     <span className="text-xs text-gray-600 mr-2">{doc}</span>
                     <button
                       onClick={() => viewDocument(doc)}
@@ -175,7 +245,7 @@ const InternshipApprovalsCard: React.FC<InternshipApprovalsCardProps> = ({
             </div>
 
             {/* Action buttons for pending applications */}
-            {activeTab === 'pending' && (
+            {activeTab === "pending" && (
               <div className="flex gap-2">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -190,7 +260,7 @@ const InternshipApprovalsCard: React.FC<InternshipApprovalsCardProps> = ({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
-                    const reason = prompt('Enter rejection reason:');
+                    const reason = prompt("Enter rejection reason:");
                     if (reason) handleReject(application, reason);
                   }}
                   className="flex items-center px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm"
@@ -211,23 +281,29 @@ const InternshipApprovalsCard: React.FC<InternshipApprovalsCardProps> = ({
             )}
 
             {/* Status indicator for approved/rejected */}
-            {activeTab !== 'pending' && (
+            {activeTab !== "pending" && (
               <div className="flex items-center justify-between">
-                <div className={`flex items-center text-sm ${
-                  application.status === 'approved' ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  {application.status === 'approved' ? (
+                <div
+                  className={`flex items-center text-sm ${
+                    application.status === "approved"
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {application.status === "approved" ? (
                     <CheckCircle className="w-4 h-4 mr-1" />
                   ) : (
                     <XCircle className="w-4 h-4 mr-1" />
                   )}
-                  {application.status.charAt(0).toUpperCase() + application.status.slice(1)}
+                  {application.status.charAt(0).toUpperCase() +
+                    application.status.slice(1)}
                 </div>
-                {application.status === 'rejected' && (application as any).rejectionReason && (
-                  <span className="text-xs text-gray-500">
-                    Reason: {(application as any).rejectionReason}
-                  </span>
-                )}
+                {application.status === "rejected" &&
+                  (application as any).rejectionReason && (
+                    <span className="text-xs text-gray-500">
+                      Reason: {(application as any).rejectionReason}
+                    </span>
+                  )}
               </div>
             )}
           </motion.div>
@@ -248,7 +324,9 @@ const InternshipApprovalsCard: React.FC<InternshipApprovalsCardProps> = ({
           <Briefcase className="w-8 h-8 text-purple-600 mr-3" />
           <div>
             <h3 className="text-lg font-semibold">Internship Approvals</h3>
-            <p className="text-sm text-gray-600">Review and approve internship applications</p>
+            <p className="text-sm text-gray-600">
+              Review and approve internship applications
+            </p>
           </div>
         </div>
         <div className="flex items-center bg-red-50 px-3 py-1 rounded-full">
@@ -262,23 +340,42 @@ const InternshipApprovalsCard: React.FC<InternshipApprovalsCardProps> = ({
       {/* Tabs */}
       <div className="flex space-x-1 mb-4 bg-gray-100 rounded-lg p-1">
         {[
-          { key: 'pending', label: 'Pending', count: pendingApplications.length, color: 'text-orange-600' },
-          { key: 'approved', label: 'Approved', count: approvedApplications.length, color: 'text-green-600' },
-          { key: 'rejected', label: 'Rejected', count: rejectedApplications.length, color: 'text-red-600' }
+          {
+            key: "pending",
+            label: "Pending",
+            count: pendingApplications.length,
+            color: "text-orange-600",
+          },
+          {
+            key: "approved",
+            label: "Approved",
+            count: approvedApplications.length,
+            color: "text-green-600",
+          },
+          {
+            key: "rejected",
+            label: "Rejected",
+            count: rejectedApplications.length,
+            color: "text-red-600",
+          },
         ].map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key as typeof activeTab)}
             className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
               activeTab === tab.key
-                ? 'bg-white shadow-sm text-blue-600'
-                : 'text-gray-600 hover:text-gray-800'
+                ? "bg-white shadow-sm text-blue-600"
+                : "text-gray-600 hover:text-gray-800"
             }`}
           >
             {tab.label}
-            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
-              activeTab === tab.key ? 'bg-blue-100 text-blue-600' : 'bg-gray-200 text-gray-600'
-            }`}>
+            <span
+              className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
+                activeTab === tab.key
+                  ? "bg-blue-100 text-blue-600"
+                  : "bg-gray-200 text-gray-600"
+              }`}
+            >
               {tab.count}
             </span>
           </button>
@@ -286,9 +383,9 @@ const InternshipApprovalsCard: React.FC<InternshipApprovalsCardProps> = ({
       </div>
 
       {/* Applications List */}
-      {activeTab === 'pending' && renderApplications(pendingApplications)}
-      {activeTab === 'approved' && renderApplications(approvedApplications)}
-      {activeTab === 'rejected' && renderApplications(rejectedApplications)}
+      {activeTab === "pending" && renderApplications(pendingApplications)}
+      {activeTab === "approved" && renderApplications(approvedApplications)}
+      {activeTab === "rejected" && renderApplications(rejectedApplications)}
 
       {/* Application Detail Modal */}
       {selectedApplication && (
@@ -315,50 +412,89 @@ const InternshipApprovalsCard: React.FC<InternshipApprovalsCardProps> = ({
                 <XCircle className="w-6 h-6" />
               </button>
             </div>
-            
+
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Student Name:</label>
-                  <p className="font-semibold">{selectedApplication.studentName}</p>
+                  <label className="text-sm font-medium text-gray-600">
+                    Student Name:
+                  </label>
+                  <p className="font-semibold">
+                    {selectedApplication.studentName}
+                  </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Student ID:</label>
-                  <p className="font-semibold">{selectedApplication.studentId}</p>
+                  <label className="text-sm font-medium text-gray-600">
+                    Student ID:
+                  </label>
+                  <p className="font-semibold">
+                    {selectedApplication.studentId}
+                  </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Company:</label>
-                  <p className="font-semibold">{selectedApplication.companyName}</p>
+                  <label className="text-sm font-medium text-gray-600">
+                    Company:
+                  </label>
+                  <p className="font-semibold">
+                    {selectedApplication.companyName}
+                  </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Position:</label>
-                  <p className="font-semibold">{selectedApplication.position}</p>
+                  <label className="text-sm font-medium text-gray-600">
+                    Position:
+                  </label>
+                  <p className="font-semibold">
+                    {selectedApplication.position}
+                  </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Duration:</label>
-                  <p className="font-semibold">{selectedApplication.duration}</p>
+                  <label className="text-sm font-medium text-gray-600">
+                    Duration:
+                  </label>
+                  <p className="font-semibold">
+                    {selectedApplication.duration}
+                  </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Start Date:</label>
-                  <p className="font-semibold">{selectedApplication.startDate}</p>
+                  <label className="text-sm font-medium text-gray-600">
+                    Start Date:
+                  </label>
+                  <p className="font-semibold">
+                    {selectedApplication.startDate}
+                  </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Stipend:</label>
-                  <p className="font-semibold">₹{selectedApplication.stipend.toLocaleString()}</p>
+                  <label className="text-sm font-medium text-gray-600">
+                    Stipend:
+                  </label>
+                  <p className="font-semibold">
+                    ₹{selectedApplication.stipend.toLocaleString()}
+                  </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Priority:</label>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(selectedApplication.priority)}`}>
+                  <label className="text-sm font-medium text-gray-600">
+                    Priority:
+                  </label>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                      selectedApplication.priority
+                    )}`}
+                  >
                     {selectedApplication.priority}
                   </span>
                 </div>
               </div>
-              
+
               <div>
-                <label className="text-sm font-medium text-gray-600">Documents:</label>
+                <label className="text-sm font-medium text-gray-600">
+                  Documents:
+                </label>
                 <div className="mt-2 space-y-2">
                   {selectedApplication.documents.map((doc, index) => (
-                    <div key={index} className="flex items-center justify-between bg-gray-50 rounded p-2">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between bg-gray-50 rounded p-2"
+                    >
                       <span className="text-sm">{doc}</span>
                       <div className="flex gap-2">
                         <button

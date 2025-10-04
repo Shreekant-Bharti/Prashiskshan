@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Users, CheckCircle, XCircle, UserCheck, UserX, Eye } from 'lucide-react';
-import { toast } from 'sonner';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  Users,
+  CheckCircle,
+  XCircle,
+  UserCheck,
+  UserX,
+  Eye,
+} from "lucide-react";
+import { toast } from "sonner";
 
 interface User {
   id: number;
@@ -39,25 +46,29 @@ const UserManagementCard: React.FC<UserManagementCardProps> = ({
   setActiveUsers,
   rejectedUsers,
   setRejectedUsers,
-  playSuccessSound
+  playSuccessSound,
 }) => {
-  const [activeTab, setActiveTab] = useState('pending');
-  const [selectedUserType, setSelectedUserType] = useState('students');
+  const [activeTab, setActiveTab] = useState("pending");
+  const [selectedUserType, setSelectedUserType] = useState("students");
 
   const handleApprove = (userType: string, userId: number) => {
-    const user = pendingUsers[userType as keyof typeof pendingUsers].find((u: User) => u.id === userId);
+    const user = pendingUsers[userType as keyof typeof pendingUsers].find(
+      (u: User) => u.id === userId
+    );
     if (!user) return;
 
     // Remove from pending
-    setPendingUsers(prev => ({
+    setPendingUsers((prev) => ({
       ...prev,
-      [userType]: prev[userType as keyof typeof prev].filter((u: User) => u.id !== userId)
+      [userType]: prev[userType as keyof typeof prev].filter(
+        (u: User) => u.id !== userId
+      ),
     }));
 
     // Add to active
-    setActiveUsers(prev => ({
+    setActiveUsers((prev) => ({
       ...prev,
-      [userType]: [...prev[userType as keyof typeof prev], user]
+      [userType]: [...prev[userType as keyof typeof prev], user],
     }));
 
     playSuccessSound();
@@ -66,42 +77,60 @@ const UserManagementCard: React.FC<UserManagementCardProps> = ({
   };
 
   const handleReject = (userType: string, userId: number) => {
-    const user = pendingUsers[userType as keyof typeof pendingUsers].find((u: User) => u.id === userId);
+    const user = pendingUsers[userType as keyof typeof pendingUsers].find(
+      (u: User) => u.id === userId
+    );
     if (!user) return;
 
-    const reason = prompt('Please provide a reason for rejection:') || 'No reason provided';
+    const reason =
+      prompt("Please provide a reason for rejection:") || "No reason provided";
 
     // Remove from pending
-    setPendingUsers(prev => ({
+    setPendingUsers((prev) => ({
       ...prev,
-      [userType]: prev[userType as keyof typeof prev].filter((u: User) => u.id !== userId)
+      [userType]: prev[userType as keyof typeof prev].filter(
+        (u: User) => u.id !== userId
+      ),
     }));
 
     // Add to rejected with reason
-    setRejectedUsers(prev => ({
+    setRejectedUsers((prev) => ({
       ...prev,
-      [userType]: [...prev[userType as keyof typeof prev], { ...user, rejectionReason: reason }]
+      [userType]: [
+        ...prev[userType as keyof typeof prev],
+        { ...user, rejectionReason: reason },
+      ],
     }));
 
     toast.error(`❌ ${user.name} rejected`);
-    console.log(`❌ User rejected: ${user.name} (${userType}) - Reason: ${reason}`);
+    console.log(
+      `❌ User rejected: ${user.name} (${userType}) - Reason: ${reason}`
+    );
   };
 
   const handleSuspend = (userType: string, userId: number) => {
-    const user = activeUsers[userType as keyof typeof activeUsers].find((u: User) => u.id === userId);
+    const user = activeUsers[userType as keyof typeof activeUsers].find(
+      (u: User) => u.id === userId
+    );
     if (!user) return;
 
     // Remove from active (in real app, would mark as suspended)
-    setActiveUsers(prev => ({
+    setActiveUsers((prev) => ({
       ...prev,
-      [userType]: prev[userType as keyof typeof prev].filter((u: User) => u.id !== userId)
+      [userType]: prev[userType as keyof typeof prev].filter(
+        (u: User) => u.id !== userId
+      ),
     }));
 
     toast.warning(`⚠️ ${user.name} suspended`);
     console.log(`⚠️ User suspended: ${user.name} (${userType})`);
   };
 
-  const renderUserList = (users: User[], userType: string, actions: string[]) => (
+  const renderUserList = (
+    users: User[],
+    userType: string,
+    actions: string[]
+  ) => (
     <div className="space-y-3">
       {users.length === 0 ? (
         <p className="text-gray-500 text-center py-4">No {userType} found</p>
@@ -118,13 +147,17 @@ const UserManagementCard: React.FC<UserManagementCardProps> = ({
               <div className="flex-1">
                 <h4 className="font-semibold text-gray-900">{user.name}</h4>
                 <p className="text-sm text-gray-600">{user.email}</p>
-                {user.college && <p className="text-xs text-gray-500">📍 {user.college}</p>}
+                {user.college && (
+                  <p className="text-xs text-gray-500">📍 {user.college}</p>
+                )}
                 {user.rejectionReason && (
-                  <p className="text-xs text-red-600 mt-1">Reason: {user.rejectionReason}</p>
+                  <p className="text-xs text-red-600 mt-1">
+                    Reason: {user.rejectionReason}
+                  </p>
                 )}
               </div>
               <div className="flex space-x-2">
-                {actions.includes('approve') && (
+                {actions.includes("approve") && (
                   <button
                     onClick={() => handleApprove(userType, user.id)}
                     className="bg-green-500 text-white px-3 py-1 rounded-md text-sm hover:bg-green-600 transition duration-200 flex items-center"
@@ -133,7 +166,7 @@ const UserManagementCard: React.FC<UserManagementCardProps> = ({
                     Approve
                   </button>
                 )}
-                {actions.includes('reject') && (
+                {actions.includes("reject") && (
                   <button
                     onClick={() => handleReject(userType, user.id)}
                     className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600 transition duration-200 flex items-center"
@@ -142,7 +175,7 @@ const UserManagementCard: React.FC<UserManagementCardProps> = ({
                     Reject
                   </button>
                 )}
-                {actions.includes('suspend') && (
+                {actions.includes("suspend") && (
                   <button
                     onClick={() => handleSuspend(userType, user.id)}
                     className="bg-yellow-500 text-white px-3 py-1 rounded-md text-sm hover:bg-yellow-600 transition duration-200 flex items-center"
@@ -164,21 +197,25 @@ const UserManagementCard: React.FC<UserManagementCardProps> = ({
       <div className="flex items-center mb-6">
         <Users className="w-8 h-8 text-blue-600 mr-3" />
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">User Management</h3>
-          <p className="text-sm text-gray-600">Manage user approvals and status</p>
+          <h3 className="text-lg font-semibold text-gray-900">
+            User Management
+          </h3>
+          <p className="text-sm text-gray-600">
+            Manage user approvals and status
+          </p>
         </div>
       </div>
 
       {/* Tab Navigation */}
       <div className="flex space-x-1 bg-gray-100 rounded-lg p-1 mb-6">
-        {['pending', 'active', 'rejected'].map((tab) => (
+        {["pending", "active", "rejected"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition duration-200 ${
               activeTab === tab
-                ? 'bg-blue-500 text-white shadow'
-                : 'text-gray-600 hover:text-gray-900'
+                ? "bg-blue-500 text-white shadow"
+                : "text-gray-600 hover:text-gray-900"
             }`}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -188,14 +225,14 @@ const UserManagementCard: React.FC<UserManagementCardProps> = ({
 
       {/* User Type Selection */}
       <div className="flex space-x-2 mb-4">
-        {['students', 'faculty', 'industry'].map((type) => (
+        {["students", "faculty", "industry"].map((type) => (
           <button
             key={type}
             onClick={() => setSelectedUserType(type)}
             className={`px-3 py-1 rounded-full text-sm transition duration-200 ${
               selectedUserType === type
-                ? 'bg-blue-100 text-blue-700 border border-blue-300'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? "bg-blue-100 text-blue-700 border border-blue-300"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
             {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -206,7 +243,7 @@ const UserManagementCard: React.FC<UserManagementCardProps> = ({
       {/* User List */}
       <div className="max-h-96 overflow-y-auto">
         <AnimatePresence mode="wait">
-          {activeTab === 'pending' && (
+          {activeTab === "pending" && (
             <motion.div
               key="pending"
               initial={{ opacity: 0 }}
@@ -216,11 +253,11 @@ const UserManagementCard: React.FC<UserManagementCardProps> = ({
               {renderUserList(
                 pendingUsers[selectedUserType as keyof typeof pendingUsers],
                 selectedUserType,
-                ['approve', 'reject']
+                ["approve", "reject"]
               )}
             </motion.div>
           )}
-          {activeTab === 'active' && (
+          {activeTab === "active" && (
             <motion.div
               key="active"
               initial={{ opacity: 0 }}
@@ -230,11 +267,11 @@ const UserManagementCard: React.FC<UserManagementCardProps> = ({
               {renderUserList(
                 activeUsers[selectedUserType as keyof typeof activeUsers],
                 selectedUserType,
-                ['suspend']
+                ["suspend"]
               )}
             </motion.div>
           )}
-          {activeTab === 'rejected' && (
+          {activeTab === "rejected" && (
             <motion.div
               key="rejected"
               initial={{ opacity: 0 }}

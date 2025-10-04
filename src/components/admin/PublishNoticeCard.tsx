@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Bell, Send, Eye, Edit, Trash2, Calendar, Users, AlertCircle, CheckCircle } from 'lucide-react';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Bell,
+  Send,
+  Eye,
+  Edit,
+  Trash2,
+  Calendar,
+  Users,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 
 interface Notice {
   id: number;
   title: string;
   content: string;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  priority: "low" | "medium" | "high" | "urgent";
   targetAudience: string[];
   scheduledDate: string;
   expiryDate: string;
-  status: 'draft' | 'scheduled' | 'published' | 'expired';
+  status: "draft" | "scheduled" | "published" | "expired";
   createdBy: string;
   createdAt: string;
   viewCount: number;
@@ -25,53 +35,53 @@ interface PublishNoticeCardProps {
 const PublishNoticeCard: React.FC<PublishNoticeCardProps> = ({
   notices,
   setNotices,
-  playSuccessSound
+  playSuccessSound,
 }) => {
-  const [activeTab, setActiveTab] = useState<'create' | 'manage'>('create');
+  const [activeTab, setActiveTab] = useState<"create" | "manage">("create");
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    priority: 'medium' as Notice['priority'],
+    title: "",
+    content: "",
+    priority: "medium" as Notice["priority"],
     targetAudience: [] as string[],
-    scheduledDate: '',
-    expiryDate: ''
+    scheduledDate: "",
+    expiryDate: "",
   });
   const [editingNotice, setEditingNotice] = useState<Notice | null>(null);
 
   const audienceOptions = [
-    'All Users',
-    'Students',
-    'Faculty',
-    'Industry Partners',
-    'Administrators',
-    'Final Year Students',
-    'Placement Coordinators'
+    "All Users",
+    "Students",
+    "Faculty",
+    "Industry Partners",
+    "Administrators",
+    "Final Year Students",
+    "Placement Coordinators",
   ];
 
   const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const handleAudienceToggle = (audience: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       targetAudience: prev.targetAudience.includes(audience)
-        ? prev.targetAudience.filter(a => a !== audience)
-        : [...prev.targetAudience, audience]
+        ? prev.targetAudience.filter((a) => a !== audience)
+        : [...prev.targetAudience, audience],
     }));
   };
 
   const createNotice = (isDraft: boolean = false) => {
     if (!formData.title.trim() || !formData.content.trim()) {
-      alert('Please fill in title and content');
+      alert("Please fill in title and content");
       return;
     }
 
     if (formData.targetAudience.length === 0) {
-      alert('Please select target audience');
+      alert("Please select target audience");
       return;
     }
 
@@ -83,110 +93,148 @@ const PublishNoticeCard: React.FC<PublishNoticeCardProps> = ({
       targetAudience: formData.targetAudience,
       scheduledDate: formData.scheduledDate || new Date().toISOString(),
       expiryDate: formData.expiryDate,
-      status: isDraft ? 'draft' : (formData.scheduledDate && new Date(formData.scheduledDate) > new Date() ? 'scheduled' : 'published'),
-      createdBy: 'Admin',
+      status: isDraft
+        ? "draft"
+        : formData.scheduledDate &&
+          new Date(formData.scheduledDate) > new Date()
+        ? "scheduled"
+        : "published",
+      createdBy: "Admin",
       createdAt: new Date().toISOString(),
-      viewCount: 0
+      viewCount: 0,
     };
 
-    setNotices(prev => [newNotice, ...prev]);
-    
+    setNotices((prev) => [newNotice, ...prev]);
+
     // Store in localStorage
-    const storedNotices = JSON.parse(localStorage.getItem('adminNotices') || '[]');
+    const storedNotices = JSON.parse(
+      localStorage.getItem("adminNotices") || "[]"
+    );
     storedNotices.unshift(newNotice);
-    localStorage.setItem('adminNotices', JSON.stringify(storedNotices));
+    localStorage.setItem("adminNotices", JSON.stringify(storedNotices));
 
     playSuccessSound();
-    
+
     // Reset form
     setFormData({
-      title: '',
-      content: '',
-      priority: 'medium',
+      title: "",
+      content: "",
+      priority: "medium",
       targetAudience: [],
-      scheduledDate: '',
-      expiryDate: ''
+      scheduledDate: "",
+      expiryDate: "",
     });
 
-    setActiveTab('manage');
-    console.log(`📢 Notice ${isDraft ? 'saved as draft' : 'published'}:`, newNotice.title);
+    setActiveTab("manage");
+    console.log(
+      `📢 Notice ${isDraft ? "saved as draft" : "published"}:`,
+      newNotice.title
+    );
   };
 
   const updateNotice = (notice: Notice) => {
-    setNotices(prev => prev.map(n => n.id === notice.id ? notice : n));
-    
+    setNotices((prev) => prev.map((n) => (n.id === notice.id ? notice : n)));
+
     // Update localStorage
-    const storedNotices = JSON.parse(localStorage.getItem('adminNotices') || '[]');
-    const updatedNotices = storedNotices.map((n: Notice) => n.id === notice.id ? notice : n);
-    localStorage.setItem('adminNotices', JSON.stringify(updatedNotices));
+    const storedNotices = JSON.parse(
+      localStorage.getItem("adminNotices") || "[]"
+    );
+    const updatedNotices = storedNotices.map((n: Notice) =>
+      n.id === notice.id ? notice : n
+    );
+    localStorage.setItem("adminNotices", JSON.stringify(updatedNotices));
 
     playSuccessSound();
-    console.log('📝 Notice updated:', notice.title);
+    console.log("📝 Notice updated:", notice.title);
   };
 
   const deleteNotice = (noticeId: number) => {
-    if (!confirm('Are you sure you want to delete this notice?')) return;
+    if (!confirm("Are you sure you want to delete this notice?")) return;
 
-    setNotices(prev => prev.filter(n => n.id !== noticeId));
-    
+    setNotices((prev) => prev.filter((n) => n.id !== noticeId));
+
     // Update localStorage
-    const storedNotices = JSON.parse(localStorage.getItem('adminNotices') || '[]');
-    const filteredNotices = storedNotices.filter((n: Notice) => n.id !== noticeId);
-    localStorage.setItem('adminNotices', JSON.stringify(filteredNotices));
+    const storedNotices = JSON.parse(
+      localStorage.getItem("adminNotices") || "[]"
+    );
+    const filteredNotices = storedNotices.filter(
+      (n: Notice) => n.id !== noticeId
+    );
+    localStorage.setItem("adminNotices", JSON.stringify(filteredNotices));
 
     playSuccessSound();
-    console.log('🗑️ Notice deleted');
+    console.log("🗑️ Notice deleted");
   };
 
   const publishNotice = (noticeId: number) => {
-    setNotices(prev => prev.map(n => 
-      n.id === noticeId 
-        ? { ...n, status: 'published' as const, scheduledDate: new Date().toISOString() }
-        : n
-    ));
-    
+    setNotices((prev) =>
+      prev.map((n) =>
+        n.id === noticeId
+          ? {
+              ...n,
+              status: "published" as const,
+              scheduledDate: new Date().toISOString(),
+            }
+          : n
+      )
+    );
+
     playSuccessSound();
-    console.log('🚀 Notice published immediately');
+    console.log("🚀 Notice published immediately");
   };
 
-  const getPriorityColor = (priority: Notice['priority']) => {
+  const getPriorityColor = (priority: Notice["priority"]) => {
     switch (priority) {
-      case 'urgent': return 'bg-red-100 text-red-800 border-red-200';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case "urgent":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "high":
+        return "bg-orange-100 text-orange-800 border-orange-200";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "low":
+        return "bg-green-100 text-green-800 border-green-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
-  const getStatusColor = (status: Notice['status']) => {
+  const getStatusColor = (status: Notice["status"]) => {
     switch (status) {
-      case 'published': return 'bg-green-100 text-green-800';
-      case 'scheduled': return 'bg-blue-100 text-blue-800';
-      case 'draft': return 'bg-gray-100 text-gray-800';
-      case 'expired': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "published":
+        return "bg-green-100 text-green-800";
+      case "scheduled":
+        return "bg-blue-100 text-blue-800";
+      case "draft":
+        return "bg-gray-100 text-gray-800";
+      case "expired":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const renderCreateForm = () => (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Notice Title</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Notice Title
+        </label>
         <input
           type="text"
           value={formData.title}
-          onChange={(e) => handleInputChange('title', e.target.value)}
+          onChange={(e) => handleInputChange("title", e.target.value)}
           placeholder="Enter notice title..."
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Content
+        </label>
         <textarea
           value={formData.content}
-          onChange={(e) => handleInputChange('content', e.target.value)}
+          onChange={(e) => handleInputChange("content", e.target.value)}
           placeholder="Enter notice content..."
           rows={4}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -195,10 +243,12 @@ const PublishNoticeCard: React.FC<PublishNoticeCardProps> = ({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Priority
+          </label>
           <select
             value={formData.priority}
-            onChange={(e) => handleInputChange('priority', e.target.value)}
+            onChange={(e) => handleInputChange("priority", e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="low">Low</option>
@@ -209,31 +259,40 @@ const PublishNoticeCard: React.FC<PublishNoticeCardProps> = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Schedule Date (Optional)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Schedule Date (Optional)
+          </label>
           <input
             type="datetime-local"
             value={formData.scheduledDate}
-            onChange={(e) => handleInputChange('scheduledDate', e.target.value)}
+            onChange={(e) => handleInputChange("scheduledDate", e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Expiry Date (Optional)</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Expiry Date (Optional)
+        </label>
         <input
           type="datetime-local"
           value={formData.expiryDate}
-          onChange={(e) => handleInputChange('expiryDate', e.target.value)}
+          onChange={(e) => handleInputChange("expiryDate", e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Target Audience</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Target Audience
+        </label>
         <div className="grid grid-cols-2 gap-2">
           {audienceOptions.map((audience) => (
-            <label key={audience} className="flex items-center space-x-2 cursor-pointer">
+            <label
+              key={audience}
+              className="flex items-center space-x-2 cursor-pointer"
+            >
               <input
                 type="checkbox"
                 checked={formData.targetAudience.includes(audience)}
@@ -286,14 +345,26 @@ const PublishNoticeCard: React.FC<PublishNoticeCardProps> = ({
           >
             <div className="flex justify-between items-start mb-3">
               <div className="flex-1">
-                <h4 className="font-semibold text-gray-800 mb-1">{notice.title}</h4>
-                <p className="text-sm text-gray-600 line-clamp-2">{notice.content}</p>
+                <h4 className="font-semibold text-gray-800 mb-1">
+                  {notice.title}
+                </h4>
+                <p className="text-sm text-gray-600 line-clamp-2">
+                  {notice.content}
+                </p>
               </div>
               <div className="flex flex-col items-end space-y-1">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(notice.priority)}`}>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                    notice.priority
+                  )}`}
+                >
                   {notice.priority}
                 </span>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(notice.status)}`}>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                    notice.status
+                  )}`}
+                >
                   {notice.status}
                 </span>
               </div>
@@ -316,12 +387,13 @@ const PublishNoticeCard: React.FC<PublishNoticeCardProps> = ({
 
             <div className="flex items-center justify-between">
               <div className="text-xs text-gray-500">
-                Target: {notice.targetAudience.slice(0, 2).join(', ')}
-                {notice.targetAudience.length > 2 && ` +${notice.targetAudience.length - 2} more`}
+                Target: {notice.targetAudience.slice(0, 2).join(", ")}
+                {notice.targetAudience.length > 2 &&
+                  ` +${notice.targetAudience.length - 2} more`}
               </div>
-              
+
               <div className="flex space-x-2">
-                {notice.status === 'draft' && (
+                {notice.status === "draft" && (
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -378,13 +450,15 @@ const PublishNoticeCard: React.FC<PublishNoticeCardProps> = ({
           <Bell className="w-8 h-8 text-yellow-600 mr-3" />
           <div>
             <h3 className="text-lg font-semibold">Publish Notice</h3>
-            <p className="text-sm text-gray-600">Create and manage system notices</p>
+            <p className="text-sm text-gray-600">
+              Create and manage system notices
+            </p>
           </div>
         </div>
         <div className="flex items-center bg-yellow-50 px-3 py-1 rounded-full">
           <AlertCircle className="w-4 h-4 text-yellow-600 mr-1" />
           <span className="text-sm font-medium text-yellow-600">
-            {notices.filter(n => n.status === 'published').length} active
+            {notices.filter((n) => n.status === "published").length} active
           </span>
         </div>
       </div>
@@ -392,16 +466,16 @@ const PublishNoticeCard: React.FC<PublishNoticeCardProps> = ({
       {/* Tabs */}
       <div className="flex space-x-1 mb-4 bg-gray-100 rounded-lg p-1">
         {[
-          { key: 'create', label: 'Create Notice', icon: Edit },
-          { key: 'manage', label: 'Manage Notices', icon: Bell }
+          { key: "create", label: "Create Notice", icon: Edit },
+          { key: "manage", label: "Manage Notices", icon: Bell },
         ].map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key as typeof activeTab)}
             className={`flex-1 flex items-center justify-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
               activeTab === tab.key
-                ? 'bg-white shadow-sm text-blue-600'
-                : 'text-gray-600 hover:text-gray-800'
+                ? "bg-white shadow-sm text-blue-600"
+                : "text-gray-600 hover:text-gray-800"
             }`}
           >
             <tab.icon className="w-4 h-4 mr-1" />
@@ -411,8 +485,8 @@ const PublishNoticeCard: React.FC<PublishNoticeCardProps> = ({
       </div>
 
       {/* Content */}
-      {activeTab === 'create' && renderCreateForm()}
-      {activeTab === 'manage' && renderManageNotices()}
+      {activeTab === "create" && renderCreateForm()}
+      {activeTab === "manage" && renderManageNotices()}
 
       {/* Edit Modal */}
       {editingNotice && (
@@ -433,13 +507,20 @@ const PublishNoticeCard: React.FC<PublishNoticeCardProps> = ({
               <input
                 type="text"
                 value={editingNotice.title}
-                onChange={(e) => setEditingNotice({...editingNotice, title: e.target.value})}
+                onChange={(e) =>
+                  setEditingNotice({ ...editingNotice, title: e.target.value })
+                }
                 className="w-full px-3 py-2 border rounded-lg"
                 placeholder="Title"
               />
               <textarea
                 value={editingNotice.content}
-                onChange={(e) => setEditingNotice({...editingNotice, content: e.target.value})}
+                onChange={(e) =>
+                  setEditingNotice({
+                    ...editingNotice,
+                    content: e.target.value,
+                  })
+                }
                 className="w-full px-3 py-2 border rounded-lg resize-none"
                 rows={3}
                 placeholder="Content"

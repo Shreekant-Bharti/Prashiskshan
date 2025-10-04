@@ -1,6 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { BarChart, TrendingUp, Users, Briefcase, Download, Calendar, Filter, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  BarChart,
+  TrendingUp,
+  Users,
+  Briefcase,
+  Download,
+  Calendar,
+  Filter,
+  RefreshCw,
+} from "lucide-react";
 
 interface AnalyticsData {
   totalUsers: number;
@@ -23,48 +32,57 @@ interface ReportsAnalyticsCardProps {
 const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
   analyticsData,
   setAnalyticsData,
-  playSuccessSound
+  playSuccessSound,
 }) => {
-  const [activeView, setActiveView] = useState<'overview' | 'users' | 'internships' | 'growth'>('overview');
-  const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month');
+  const [activeView, setActiveView] = useState<
+    "overview" | "users" | "internships" | "growth"
+  >("overview");
+  const [dateRange, setDateRange] = useState<
+    "week" | "month" | "quarter" | "year"
+  >("month");
   const [isLoading, setIsLoading] = useState(false);
 
   // Simulate data refresh
   const refreshData = async () => {
     setIsLoading(true);
     playSuccessSound();
-    
+
     // Simulate API call delay
     setTimeout(() => {
       // Update analytics data with some random variations
-      setAnalyticsData(prev => ({
+      setAnalyticsData((prev) => ({
         ...prev,
         activeUsers: prev.activeUsers + Math.floor(Math.random() * 10) - 5,
         totalUsers: prev.totalUsers + Math.floor(Math.random() * 20),
-        approvedInternships: prev.approvedInternships + Math.floor(Math.random() * 5)
+        approvedInternships:
+          prev.approvedInternships + Math.floor(Math.random() * 5),
       }));
       setIsLoading(false);
-      console.log('📊 Analytics data refreshed');
+      console.log("📊 Analytics data refreshed");
     }, 1500);
   };
 
   // Generate and download report
-  const downloadReport = (type: 'pdf' | 'excel' | 'csv') => {
+  const downloadReport = (type: "pdf" | "excel" | "csv") => {
     playSuccessSound();
-    console.log(`📄 Downloading ${type.toUpperCase()} report for ${dateRange} period`);
-    
+    console.log(
+      `📄 Downloading ${type.toUpperCase()} report for ${dateRange} period`
+    );
+
     // Simulate report generation
     const reportData = {
       type,
       dateRange,
       generatedAt: new Date().toISOString(),
-      data: analyticsData
+      data: analyticsData,
     };
-    
+
     // In a real app, this would trigger actual file download
-    const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(reportData, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `campus2career-report-${dateRange}-${Date.now()}.${type}`;
     document.body.appendChild(a);
@@ -83,8 +101,13 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
           <p className="text-sm opacity-90">{title}</p>
           <p className="text-2xl font-bold">{value}</p>
           {change && (
-            <p className={`text-xs ${change > 0 ? 'text-green-200' : 'text-red-200'}`}>
-              {change > 0 ? '+' : ''}{change}% from last {dateRange}
+            <p
+              className={`text-xs ${
+                change > 0 ? "text-green-200" : "text-red-200"
+              }`}
+            >
+              {change > 0 ? "+" : ""}
+              {change}% from last {dateRange}
             </p>
           )}
         </div>
@@ -93,11 +116,23 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
     </motion.div>
   );
 
-  const ProgressBar = ({ label, value, max, color }: { label: string; value: number; max: number; color: string }) => (
+  const ProgressBar = ({
+    label,
+    value,
+    max,
+    color,
+  }: {
+    label: string;
+    value: number;
+    max: number;
+    color: string;
+  }) => (
     <div className="mb-3">
       <div className="flex justify-between text-sm mb-1">
         <span className="text-gray-600">{label}</span>
-        <span className="font-medium">{value}/{max}</span>
+        <span className="font-medium">
+          {value}/{max}
+        </span>
       </div>
       <div className="w-full bg-gray-200 rounded-full h-2">
         <div
@@ -165,9 +200,24 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
     <div className="space-y-4">
       <div className="bg-gray-50 rounded-lg p-4">
         <h4 className="font-semibold mb-3">User Distribution</h4>
-        <ProgressBar label="Students" value={2840} max={3000} color="bg-blue-500" />
-        <ProgressBar label="Faculty" value={156} max={200} color="bg-green-500" />
-        <ProgressBar label="Industry Partners" value={89} max={150} color="bg-purple-500" />
+        <ProgressBar
+          label="Students"
+          value={2840}
+          max={3000}
+          color="bg-blue-500"
+        />
+        <ProgressBar
+          label="Faculty"
+          value={156}
+          max={200}
+          color="bg-green-500"
+        />
+        <ProgressBar
+          label="Industry Partners"
+          value={89}
+          max={150}
+          color="bg-purple-500"
+        />
       </div>
 
       <div className="bg-gray-50 rounded-lg p-4">
@@ -176,7 +226,9 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
           {analyticsData.topColleges.map((college, index) => (
             <div key={index} className="flex justify-between items-center">
               <span className="text-sm">{college.name}</span>
-              <span className="font-medium text-blue-600">{college.students}</span>
+              <span className="font-medium text-blue-600">
+                {college.students}
+              </span>
             </div>
           ))}
         </div>
@@ -196,10 +248,22 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
                 <div className="w-20 bg-gray-200 rounded-full h-2 mr-2">
                   <div
                     className="h-2 bg-blue-500 rounded-full"
-                    style={{ width: `${(category.count / Math.max(...analyticsData.internshipsByCategory.map(c => c.count))) * 100}%` }}
+                    style={{
+                      width: `${
+                        (category.count /
+                          Math.max(
+                            ...analyticsData.internshipsByCategory.map(
+                              (c) => c.count
+                            )
+                          )) *
+                        100
+                      }%`,
+                    }}
                   ></div>
                 </div>
-                <span className="font-medium text-blue-600 w-8">{category.count}</span>
+                <span className="font-medium text-blue-600 w-8">
+                  {category.count}
+                </span>
               </div>
             </div>
           ))}
@@ -212,7 +276,9 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
           {analyticsData.topCompanies.map((company, index) => (
             <div key={index} className="flex justify-between items-center">
               <span className="text-sm">{company.name}</span>
-              <span className="font-medium text-purple-600">{company.internships}</span>
+              <span className="font-medium text-purple-600">
+                {company.internships}
+              </span>
             </div>
           ))}
         </div>
@@ -232,10 +298,22 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
                 <div className="w-24 bg-gray-200 rounded-full h-2 mr-2">
                   <div
                     className="h-2 bg-green-500 rounded-full"
-                    style={{ width: `${(month.count / Math.max(...analyticsData.monthlyRegistrations.map(m => m.count))) * 100}%` }}
+                    style={{
+                      width: `${
+                        (month.count /
+                          Math.max(
+                            ...analyticsData.monthlyRegistrations.map(
+                              (m) => m.count
+                            )
+                          )) *
+                        100
+                      }%`,
+                    }}
                   ></div>
                 </div>
-                <span className="font-medium text-green-600 w-8">{month.count}</span>
+                <span className="font-medium text-green-600 w-8">
+                  {month.count}
+                </span>
               </div>
             </div>
           ))}
@@ -248,8 +326,13 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
           {analyticsData.userGrowth.map((period, index) => (
             <div key={index} className="flex justify-between items-center">
               <span className="text-sm">{period.period}</span>
-              <span className={`font-medium ${period.growth > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {period.growth > 0 ? '+' : ''}{period.growth}%
+              <span
+                className={`font-medium ${
+                  period.growth > 0 ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {period.growth > 0 ? "+" : ""}
+                {period.growth}%
               </span>
             </div>
           ))}
@@ -270,7 +353,9 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
           <BarChart className="w-8 h-8 text-indigo-600 mr-3" />
           <div>
             <h3 className="text-lg font-semibold">Reports & Analytics</h3>
-            <p className="text-sm text-gray-600">View detailed system analytics and reports</p>
+            <p className="text-sm text-gray-600">
+              View detailed system analytics and reports
+            </p>
           </div>
         </div>
         <div className="flex items-center space-x-2">
@@ -281,7 +366,9 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
             disabled={isLoading}
             className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition"
           >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
+            />
           </motion.button>
         </div>
       </div>
@@ -289,18 +376,18 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
       {/* Date Range Selector */}
       <div className="flex space-x-1 mb-4 bg-gray-100 rounded-lg p-1">
         {[
-          { key: 'week', label: 'Week' },
-          { key: 'month', label: 'Month' },
-          { key: 'quarter', label: 'Quarter' },
-          { key: 'year', label: 'Year' }
+          { key: "week", label: "Week" },
+          { key: "month", label: "Month" },
+          { key: "quarter", label: "Quarter" },
+          { key: "year", label: "Year" },
         ].map((range) => (
           <button
             key={range.key}
             onClick={() => setDateRange(range.key as typeof dateRange)}
             className={`flex-1 px-3 py-1 text-sm font-medium rounded-md transition-all duration-200 ${
               dateRange === range.key
-                ? 'bg-white shadow-sm text-blue-600'
-                : 'text-gray-600 hover:text-gray-800'
+                ? "bg-white shadow-sm text-blue-600"
+                : "text-gray-600 hover:text-gray-800"
             }`}
           >
             {range.label}
@@ -311,18 +398,18 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
       {/* View Tabs */}
       <div className="flex space-x-1 mb-4 bg-gray-100 rounded-lg p-1">
         {[
-          { key: 'overview', label: 'Overview', icon: BarChart },
-          { key: 'users', label: 'Users', icon: Users },
-          { key: 'internships', label: 'Internships', icon: Briefcase },
-          { key: 'growth', label: 'Growth', icon: TrendingUp }
+          { key: "overview", label: "Overview", icon: BarChart },
+          { key: "users", label: "Users", icon: Users },
+          { key: "internships", label: "Internships", icon: Briefcase },
+          { key: "growth", label: "Growth", icon: TrendingUp },
         ].map((view) => (
           <button
             key={view.key}
             onClick={() => setActiveView(view.key as typeof activeView)}
             className={`flex-1 flex items-center justify-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
               activeView === view.key
-                ? 'bg-white shadow-sm text-blue-600'
-                : 'text-gray-600 hover:text-gray-800'
+                ? "bg-white shadow-sm text-blue-600"
+                : "text-gray-600 hover:text-gray-800"
             }`}
           >
             <view.icon className="w-4 h-4 mr-1" />
@@ -333,23 +420,25 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
 
       {/* Content Area */}
       <div className="max-h-80 overflow-y-auto">
-        {activeView === 'overview' && renderOverview()}
-        {activeView === 'users' && renderUsers()}
-        {activeView === 'internships' && renderInternships()}
-        {activeView === 'growth' && renderGrowth()}
+        {activeView === "overview" && renderOverview()}
+        {activeView === "users" && renderUsers()}
+        {activeView === "internships" && renderInternships()}
+        {activeView === "growth" && renderGrowth()}
       </div>
 
       {/* Download Reports */}
       <div className="mt-4 pt-4 border-t border-gray-200">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-600">Export Reports:</span>
+          <span className="text-sm font-medium text-gray-600">
+            Export Reports:
+          </span>
           <div className="flex space-x-2">
-            {['pdf', 'excel', 'csv'].map((type) => (
+            {["pdf", "excel", "csv"].map((type) => (
               <motion.button
                 key={type}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => downloadReport(type as 'pdf' | 'excel' | 'csv')}
+                onClick={() => downloadReport(type as "pdf" | "excel" | "csv")}
                 className="flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm"
               >
                 <Download className="w-3 h-3 mr-1" />

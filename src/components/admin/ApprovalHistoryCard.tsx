@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { History, CheckCircle, XCircle, Clock, Filter, Search, Download, Calendar } from 'lucide-react';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  History,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Filter,
+  Search,
+  Download,
+  Calendar,
+} from "lucide-react";
 
 interface ApprovalRecord {
   id: number;
-  type: 'user' | 'internship' | 'notice';
+  type: "user" | "internship" | "notice";
   itemTitle: string;
   applicantName: string;
-  action: 'approved' | 'rejected' | 'pending';
+  action: "approved" | "rejected" | "pending";
   actionBy: string;
   actionDate: string;
   reason?: string;
-  priority: 'high' | 'medium' | 'low';
+  priority: "high" | "medium" | "low";
 }
 
 interface ApprovalHistoryCardProps {
@@ -23,94 +32,124 @@ interface ApprovalHistoryCardProps {
 const ApprovalHistoryCard: React.FC<ApprovalHistoryCardProps> = ({
   approvalHistory,
   setApprovalHistory,
-  playSuccessSound
+  playSuccessSound,
 }) => {
-  const [filterType, setFilterType] = useState<'all' | 'user' | 'internship' | 'notice'>('all');
-  const [filterAction, setFilterAction] = useState<'all' | 'approved' | 'rejected' | 'pending'>('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [dateRange, setDateRange] = useState<'all' | 'today' | 'week' | 'month'>('all');
+  const [filterType, setFilterType] = useState<
+    "all" | "user" | "internship" | "notice"
+  >("all");
+  const [filterAction, setFilterAction] = useState<
+    "all" | "approved" | "rejected" | "pending"
+  >("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [dateRange, setDateRange] = useState<
+    "all" | "today" | "week" | "month"
+  >("all");
 
-  const filteredHistory = approvalHistory.filter(record => {
-    const matchesType = filterType === 'all' || record.type === filterType;
-    const matchesAction = filterAction === 'all' || record.action === filterAction;
-    const matchesSearch = record.itemTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         record.applicantName.toLowerCase().includes(searchTerm.toLowerCase());
-    
+  const filteredHistory = approvalHistory.filter((record) => {
+    const matchesType = filterType === "all" || record.type === filterType;
+    const matchesAction =
+      filterAction === "all" || record.action === filterAction;
+    const matchesSearch =
+      record.itemTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.applicantName.toLowerCase().includes(searchTerm.toLowerCase());
+
     let matchesDate = true;
-    if (dateRange !== 'all') {
+    if (dateRange !== "all") {
       const recordDate = new Date(record.actionDate);
       const now = new Date();
       const diffTime = now.getTime() - recordDate.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
+
       switch (dateRange) {
-        case 'today':
+        case "today":
           matchesDate = diffDays <= 1;
           break;
-        case 'week':
+        case "week":
           matchesDate = diffDays <= 7;
           break;
-        case 'month':
+        case "month":
           matchesDate = diffDays <= 30;
           break;
       }
     }
-    
+
     return matchesType && matchesAction && matchesSearch && matchesDate;
   });
 
   const exportHistory = () => {
     playSuccessSound();
     const csvContent = [
-      ['Date', 'Type', 'Title', 'Applicant', 'Action', 'Action By', 'Reason'].join(','),
-      ...filteredHistory.map(record => [
-        new Date(record.actionDate).toLocaleDateString(),
-        record.type,
-        record.itemTitle,
-        record.applicantName,
-        record.action,
-        record.actionBy,
-        record.reason || ''
-      ].join(','))
-    ].join('\n');
+      [
+        "Date",
+        "Type",
+        "Title",
+        "Applicant",
+        "Action",
+        "Action By",
+        "Reason",
+      ].join(","),
+      ...filteredHistory.map((record) =>
+        [
+          new Date(record.actionDate).toLocaleDateString(),
+          record.type,
+          record.itemTitle,
+          record.applicantName,
+          record.action,
+          record.actionBy,
+          record.reason || "",
+        ].join(",")
+      ),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `approval-history-${Date.now()}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    
-    console.log('📊 Approval history exported');
+
+    console.log("📊 Approval history exported");
   };
 
   const getActionIcon = (action: string) => {
     switch (action) {
-      case 'approved': return <CheckCircle className="w-4 h-4 text-green-600" />;
-      case 'rejected': return <XCircle className="w-4 h-4 text-red-600" />;
-      case 'pending': return <Clock className="w-4 h-4 text-yellow-600" />;
-      default: return <Clock className="w-4 h-4 text-gray-600" />;
+      case "approved":
+        return <CheckCircle className="w-4 h-4 text-green-600" />;
+      case "rejected":
+        return <XCircle className="w-4 h-4 text-red-600" />;
+      case "pending":
+        return <Clock className="w-4 h-4 text-yellow-600" />;
+      default:
+        return <Clock className="w-4 h-4 text-gray-600" />;
     }
   };
 
   const getActionColor = (action: string) => {
     switch (action) {
-      case 'approved': return 'bg-green-50 text-green-800 border-green-200';
-      case 'rejected': return 'bg-red-50 text-red-800 border-red-200';
-      case 'pending': return 'bg-yellow-50 text-yellow-800 border-yellow-200';
-      default: return 'bg-gray-50 text-gray-800 border-gray-200';
+      case "approved":
+        return "bg-green-50 text-green-800 border-green-200";
+      case "rejected":
+        return "bg-red-50 text-red-800 border-red-200";
+      case "pending":
+        return "bg-yellow-50 text-yellow-800 border-yellow-200";
+      default:
+        return "bg-gray-50 text-gray-800 border-gray-200";
     }
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'user': return 'bg-blue-50 text-blue-800';
-      case 'internship': return 'bg-purple-50 text-purple-800';
-      case 'notice': return 'bg-orange-50 text-orange-800';
-      default: return 'bg-gray-50 text-gray-800';
+      case "user":
+        return "bg-blue-50 text-blue-800";
+      case "internship":
+        return "bg-purple-50 text-purple-800";
+      case "notice":
+        return "bg-orange-50 text-orange-800";
+      default:
+        return "bg-gray-50 text-gray-800";
     }
   };
 
@@ -126,7 +165,9 @@ const ApprovalHistoryCard: React.FC<ApprovalHistoryCardProps> = ({
           <History className="w-8 h-8 text-teal-600 mr-3" />
           <div>
             <h3 className="text-lg font-semibold">Approval History</h3>
-            <p className="text-sm text-gray-600">View complete approval activity log</p>
+            <p className="text-sm text-gray-600">
+              View complete approval activity log
+            </p>
           </div>
         </div>
         <div className="flex items-center space-x-2">
@@ -159,10 +200,14 @@ const ApprovalHistoryCard: React.FC<ApprovalHistoryCardProps> = ({
         {/* Filter buttons */}
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Type</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Type
+            </label>
             <select
               value={filterType}
-              onChange={(e) => setFilterType(e.target.value as typeof filterType)}
+              onChange={(e) =>
+                setFilterType(e.target.value as typeof filterType)
+              }
               className="w-full px-3 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Types</option>
@@ -172,10 +217,14 @@ const ApprovalHistoryCard: React.FC<ApprovalHistoryCardProps> = ({
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Action</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Action
+            </label>
             <select
               value={filterAction}
-              onChange={(e) => setFilterAction(e.target.value as typeof filterAction)}
+              onChange={(e) =>
+                setFilterAction(e.target.value as typeof filterAction)
+              }
               className="w-full px-3 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Actions</option>
@@ -187,21 +236,23 @@ const ApprovalHistoryCard: React.FC<ApprovalHistoryCardProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Date Range</label>
+          <label className="block text-xs font-medium text-gray-600 mb-1">
+            Date Range
+          </label>
           <div className="flex space-x-1">
             {[
-              { key: 'all', label: 'All' },
-              { key: 'today', label: 'Today' },
-              { key: 'week', label: 'Week' },
-              { key: 'month', label: 'Month' }
+              { key: "all", label: "All" },
+              { key: "today", label: "Today" },
+              { key: "week", label: "Week" },
+              { key: "month", label: "Month" },
             ].map((range) => (
               <button
                 key={range.key}
                 onClick={() => setDateRange(range.key as typeof dateRange)}
                 className={`flex-1 px-2 py-1 text-xs font-medium rounded transition ${
                   dateRange === range.key
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
                 {range.label}
@@ -229,29 +280,44 @@ const ApprovalHistoryCard: React.FC<ApprovalHistoryCardProps> = ({
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-1">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(record.type)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(
+                        record.type
+                      )}`}
+                    >
                       {record.type}
                     </span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getActionColor(record.action)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getActionColor(
+                        record.action
+                      )}`}
+                    >
                       {getActionIcon(record.action)}
                       <span className="ml-1">{record.action}</span>
                     </span>
                   </div>
-                  <h4 className="font-semibold text-gray-800 text-sm">{record.itemTitle}</h4>
-                  <p className="text-xs text-gray-600">by {record.applicantName}</p>
+                  <h4 className="font-semibold text-gray-800 text-sm">
+                    {record.itemTitle}
+                  </h4>
+                  <p className="text-xs text-gray-600">
+                    by {record.applicantName}
+                  </p>
                 </div>
                 <div className="text-right text-xs text-gray-500">
                   <div className="flex items-center">
                     <Calendar className="w-3 h-3 mr-1" />
                     {new Date(record.actionDate).toLocaleDateString()}
                   </div>
-                  <div className="mt-1">{new Date(record.actionDate).toLocaleTimeString()}</div>
+                  <div className="mt-1">
+                    {new Date(record.actionDate).toLocaleTimeString()}
+                  </div>
                 </div>
               </div>
 
               <div className="flex items-center justify-between text-xs">
                 <div className="text-gray-600">
-                  Action by: <span className="font-medium">{record.actionBy}</span>
+                  Action by:{" "}
+                  <span className="font-medium">{record.actionBy}</span>
                 </div>
                 {record.reason && (
                   <div className="text-gray-500 max-w-xs truncate">
@@ -264,7 +330,12 @@ const ApprovalHistoryCard: React.FC<ApprovalHistoryCardProps> = ({
               <div className="mt-2 flex items-center text-xs text-gray-400">
                 <div className="flex-1 h-px bg-gray-200"></div>
                 <span className="px-2">
-                  {Math.floor((new Date().getTime() - new Date(record.actionDate).getTime()) / (1000 * 60 * 60 * 24))} days ago
+                  {Math.floor(
+                    (new Date().getTime() -
+                      new Date(record.actionDate).getTime()) /
+                      (1000 * 60 * 60 * 24)
+                  )}{" "}
+                  days ago
                 </span>
                 <div className="flex-1 h-px bg-gray-200"></div>
               </div>
@@ -278,19 +349,19 @@ const ApprovalHistoryCard: React.FC<ApprovalHistoryCardProps> = ({
         <div className="grid grid-cols-4 gap-4 text-center">
           <div>
             <div className="text-lg font-bold text-green-600">
-              {approvalHistory.filter(r => r.action === 'approved').length}
+              {approvalHistory.filter((r) => r.action === "approved").length}
             </div>
             <div className="text-xs text-gray-600">Approved</div>
           </div>
           <div>
             <div className="text-lg font-bold text-red-600">
-              {approvalHistory.filter(r => r.action === 'rejected').length}
+              {approvalHistory.filter((r) => r.action === "rejected").length}
             </div>
             <div className="text-xs text-gray-600">Rejected</div>
           </div>
           <div>
             <div className="text-lg font-bold text-yellow-600">
-              {approvalHistory.filter(r => r.action === 'pending').length}
+              {approvalHistory.filter((r) => r.action === "pending").length}
             </div>
             <div className="text-xs text-gray-600">Pending</div>
           </div>
