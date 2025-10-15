@@ -1,5 +1,14 @@
 import { motion } from "motion/react";
-import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, MapPin, GraduationCap } from "lucide-react";
+import {
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
+  Mail,
+  Phone,
+  MapPin,
+  GraduationCap,
+} from "lucide-react";
 
 const footerLinks = {
   Company: ["About Us", "Careers", "Press", "Blog"],
@@ -22,7 +31,7 @@ export const Footer = () => {
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
-      
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
@@ -50,23 +59,35 @@ export const Footer = () => {
 
             {/* Contact Info */}
             <div className="space-y-3 text-sm text-muted-foreground">
-              <a href="mailto:contact@campus2career.com" className="flex items-center gap-2 hover:text-primary transition-smooth group">
+              <a
+                href="mailto:contact@campus2career.com"
+                className="flex items-center gap-2 hover:text-primary transition-smooth group"
+              >
                 <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-smooth">
                   <Mail className="w-4 h-4 text-primary group-hover:scale-110 transition-smooth" />
                 </div>
-                <span className="group-hover:translate-x-1 transition-smooth">contact@campus2career.com</span>
+                <span className="group-hover:translate-x-1 transition-smooth">
+                  contact@campus2career.com
+                </span>
               </a>
-              <a href="tel:+911234567890" className="flex items-center gap-2 hover:text-primary transition-smooth group">
+              <a
+                href="tel:+911234567890"
+                className="flex items-center gap-2 hover:text-primary transition-smooth group"
+              >
                 <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-smooth">
                   <Phone className="w-4 h-4 text-primary group-hover:scale-110 transition-smooth" />
                 </div>
-                <span className="group-hover:translate-x-1 transition-smooth">+91 123 456 7890</span>
+                <span className="group-hover:translate-x-1 transition-smooth">
+                  +91 123 456 7890
+                </span>
               </a>
               <div className="flex items-center gap-2 group cursor-pointer hover:text-primary transition-smooth">
                 <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-smooth">
                   <MapPin className="w-4 h-4 text-primary group-hover:scale-110 transition-smooth" />
                 </div>
-                <span className="group-hover:translate-x-1 transition-smooth">Bangalore, India</span>
+                <span className="group-hover:translate-x-1 transition-smooth">
+                  Bangalore, India
+                </span>
               </div>
             </div>
           </div>
@@ -133,9 +154,12 @@ export const Footer = () => {
               viewport={{ once: true }}
               className="text-sm text-muted-foreground text-center md:text-right"
             >
-              <p className="font-medium">© {new Date().getFullYear()} Campus2Career. All rights reserved.</p>
+              <p className="font-medium">
+                © {new Date().getFullYear()} Campus2Career. All rights reserved.
+              </p>
               <p className="mt-1 flex items-center justify-center md:justify-end gap-1">
-                Built with <span className="text-red-500 animate-pulse-glow text-base">❤️</span> for the future of education and career development
+                Campus2Career is presented by{" "}
+                <span className="font-semibold text-primary">OptimusEd</span>
               </p>
             </motion.div>
           </div>
