@@ -1,22 +1,28 @@
-# Welcome to your Lovable project
+# Campus2Career - Prashiskshan
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/a4884455-756a-4581-84c8-a0d22ae1c9c1
+**Campus2Career** is a comprehensive educational platform that bridges the gap between students, colleges, and industries through verified internships, real-time mentorship, and NEP-compliant career development programs.
 
-## How can I edit this code?
+**Presented by:** OptimusEd
 
-There are several ways of editing your application.
+**Repository**: https://github.com/Shreekant-Bharti/Prashiskshan
 
-**Use Lovable**
+## Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a4884455-756a-4581-84c8-a0d22ae1c9c1) and start prompting.
+- 🎓 Multi-portal system (Student, Faculty, Industry, Admin)
+- 🔐 Secure authentication and role-based access
+- 📊 Real-time analytics and reporting
+- 💼 Verified internship management
+- 📚 Logbook tracking and progress monitoring
+- 🤝 Faculty-student mentorship system
+- 🏢 Industry partner collaboration
 
-Changes made via Lovable will be committed automatically to this repo.
+## How to Edit This Code
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Clone this repository and start developing locally.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -60,14 +66,37 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
+## How to Deploy This Project
 
-Simply open [Lovable](https://lovable.dev/projects/a4884455-756a-4581-84c8-a0d22ae1c9c1) and click on Share -> Publish.
+You can deploy this project using various platforms:
 
-## Can I connect a custom domain to my Lovable project?
+- **Vercel**: Connect your GitHub repository and deploy
+- **Netlify**: Connect your GitHub repository for automatic deployments
+- **GitHub Pages**: Use `npm run build` and deploy the `dist` folder
 
-Yes, you can!
+## Login Credentials
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Admin Portal
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- Email: admin@campus.com
+- Password: Admin@123
+
+### Student Portal
+
+- Email: student1@campus.com
+- Password: Student@123
+
+### Faculty Portal
+
+- ID: FAC001
+- Password: Faculty@123
+
+### Industry Portal
+
+- Email: industry1@campus.com
+- Password: Industry@123
+
+## License
+
+© 2025 Campus2Career. All rights reserved.
+Presented by OptimusEd.
