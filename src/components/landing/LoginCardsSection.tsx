@@ -489,18 +489,15 @@ const LoginForm = ({
         if (email === DUMMY.email && password === DUMMY.password) {
           console.log("✅ Admin login successful, setting localStorage");
 
-          // Clear any existing admin data first
-          localStorage.removeItem("admin_logged_in");
-          localStorage.removeItem("admin_email");
-
-          // Set new admin data
-          localStorage.setItem("admin_logged_in", "true");
-          localStorage.setItem("admin_email", String(data.email));
+          // Set admin session (using the same keys as AdminLogin page)
+          localStorage.setItem("isAdminLoggedIn", "true");
+          localStorage.setItem("adminEmail", String(data.email));
+          localStorage.setItem("adminLoginTime", new Date().toISOString());
 
           // Verify localStorage was set
           const verification = {
-            admin_logged_in: localStorage.getItem("admin_logged_in"),
-            admin_email: localStorage.getItem("admin_email"),
+            isAdminLoggedIn: localStorage.getItem("isAdminLoggedIn"),
+            adminEmail: localStorage.getItem("adminEmail"),
             timestamp: new Date().toISOString(),
           };
 
@@ -508,11 +505,9 @@ const LoginForm = ({
 
           toast.success("🎉 Welcome to Admin Dashboard!");
 
-          // Navigate with a small delay to ensure localStorage is set
-          setTimeout(() => {
-            console.log("🚀 Navigating to /admin-dashboard");
-            navigate("/admin-dashboard");
-          }, 100);
+          // Navigate directly to admin dashboard
+          console.log("🚀 Navigating to /admin/dashboard");
+          navigate("/admin/dashboard");
         } else {
           console.log("❌ Admin login failed - credential mismatch");
           console.log("❌ Failed because:", {

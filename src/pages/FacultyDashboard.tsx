@@ -75,6 +75,7 @@ const FacultyDashboard = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1, duration: 0.4 }}
+            className="col-span-1"
           >
             <FacultyProfileCard />
           </motion.div>
@@ -83,7 +84,7 @@ const FacultyDashboard = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.4 }}
-            className="md:col-span-2 lg:col-span-2"
+            className="col-span-1 md:col-span-2 lg:col-span-2"
           >
             <AssignedStudentsCard />
           </motion.div>
@@ -92,7 +93,7 @@ const FacultyDashboard = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 0.4 }}
-            className="md:col-span-2 lg:col-span-2"
+            className="col-span-1 md:col-span-2 lg:col-span-2"
           >
             <StudentProgressCard />
           </motion.div>
@@ -101,6 +102,7 @@ const FacultyDashboard = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, duration: 0.4 }}
+            className="col-span-1"
           >
             <FacultyAnalyticsCard />
           </motion.div>
@@ -109,7 +111,7 @@ const FacultyDashboard = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.5, duration: 0.4 }}
-            className="md:col-span-2 lg:col-span-2"
+            className="col-span-1 md:col-span-2 lg:col-span-2"
           >
             <FeedbackManagementCard />
           </motion.div>
@@ -118,6 +120,7 @@ const FacultyDashboard = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6, duration: 0.4 }}
+            className="col-span-1"
           >
             <LogbookReviewCard />
           </motion.div>
@@ -126,6 +129,7 @@ const FacultyDashboard = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.7, duration: 0.4 }}
+            className="col-span-1"
           >
             <ReportsGenerationCard />
           </motion.div>
@@ -134,6 +138,7 @@ const FacultyDashboard = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.8, duration: 0.4 }}
+            className="col-span-1"
           >
             <StudentMeetingsCard />
           </motion.div>

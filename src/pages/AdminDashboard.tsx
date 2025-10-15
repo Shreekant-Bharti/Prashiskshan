@@ -456,11 +456,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-blue-50 to-cyan-50">
-      {/* Debug indicator */}
-      <h1 className="fixed top-4 left-4 text-sm font-mono text-violet-600 bg-white px-3 py-1 rounded-full shadow z-50">
-        🛡️ AdminDashboard Loaded - {currentTime.toLocaleTimeString()}
-      </h1>
-
       {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}

@@ -396,7 +396,7 @@ const ReportsAnalyticsCard: React.FC<ReportsAnalyticsCardProps> = ({
       </div>
 
       {/* View Tabs */}
-      <div className="flex space-x-1 mb-4 bg-gray-100 rounded-lg p-1">
+      <div className="flex gap-1 mb-4 bg-gray-100 rounded-lg p-1">
         {[
           { key: "overview", label: "Overview", icon: BarChart },
           { key: "users", label: "Users", icon: Users },
