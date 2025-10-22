@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Plus, CheckCircle } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Plus, CheckCircle, Search } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,22 +9,47 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const PostInternshipCard = () => {
   const [showForm, setShowForm] = useState(false);
+  // Keep existing internshipType for backward-compatibility with listings card
   const [internshipType, setInternshipType] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [selectedColleges, setSelectedColleges] = useState<string[]>([]);
+  const [postTarget, setPostTarget] = useState<"all" | "specific">("all");
+  const [collegeDialogOpen, setCollegeDialogOpen] = useState(false);
+  const [collegeSearch, setCollegeSearch] = useState("");
   
+  // Dummy Indian colleges dataset (can be replaced with API later)
   const colleges = [
-    "VIT Vellore",
-    "SRM Institute of Science and Technology",
-    "Anna University",
-    "NIT Trichy",
+    "IIT Bombay",
+    "IIT Delhi",
     "IIT Madras",
-    "PSG College of Technology",
-    "Thiagarajar College of Engineering"
+    "NIT Trichy",
+    "Anna University",
+    "Jadavpur University",
+    "VIT Vellore",
+    "BITS Pilani",
+    "SRM Institute",
+    "Delhi Technological University",
+    "BIT Sindri",
+    "PES University",
+    "IIT Kharagpur",
+    "IIT Kanpur",
+    "IIT Roorkee",
+    "NIT Surathkal",
+    "NIT Warangal",
+    "IIIT Hyderabad",
+    "IIIT Bangalore",
   ];
+
+  const filteredColleges = useMemo(() => {
+    const q = collegeSearch.trim().toLowerCase();
+    if (!q) return colleges;
+    return colleges.filter((c) => c.toLowerCase().includes(q));
+  }, [collegeSearch, colleges]);
   
   const [formData, setFormData] = useState({
     title: "",
@@ -46,14 +71,22 @@ const PostInternshipCard = () => {
 
     const newInternship = {
       ...formData,
-      type: internshipType,
+      type: internshipType, // legacy field used by listings display
+      target: postTarget,
+      colleges: postTarget === "specific" ? selectedColleges : undefined,
       company: "Infosys",
       id: Date.now(),
       postedDate: new Date().toISOString(),
-      selectedColleges: internshipType === "college-specific" ? selectedColleges : [],
+      selectedColleges: internshipType === "college-specific" || postTarget === "specific" ? selectedColleges : [],
     };
 
-    if (internshipType === "universal") {
+    // Validation: ensure colleges selected if specific targeting
+    if (postTarget === "specific" && selectedColleges.length === 0) {
+      toast.error("Please select at least one college.");
+      return;
+    }
+
+    if (postTarget === "all" || internshipType === "universal") {
       // Universal internships - auto approve after 10 seconds
       setShowSuccess(true);
       
@@ -82,6 +115,7 @@ const PostInternshipCard = () => {
           colleges: "",
         });
         setInternshipType("");
+        setPostTarget("all");
         setSelectedColleges([]);
       }, 10000); // 10 seconds
     } else {
@@ -108,6 +142,7 @@ const PostInternshipCard = () => {
           colleges: "",
         });
         setInternshipType("");
+        setPostTarget("all");
         setSelectedColleges([]);
       }, 3000);
     }
@@ -225,56 +260,94 @@ const PostInternshipCard = () => {
                   </div>
                 </div>
 
+                {/* Target selection (Radio) */}
                 <div className="space-y-2">
-                  <Label>Internship Type *</Label>
-                  <Select required value={internshipType} onValueChange={setInternshipType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="universal">Universal (All Students)</SelectItem>
-                      <SelectItem value="college-specific">College-Specific</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label>Posting Target *</Label>
+                  <RadioGroup
+                    value={postTarget}
+                    onValueChange={(v) => {
+                      const value = v as "all" | "specific";
+                      setPostTarget(value);
+                      if (value === "specific") {
+                        setCollegeDialogOpen(true);
+                      }
+                    }}
+                    className="grid sm:grid-cols-2 gap-4"
+                  >
+                    <label className="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:border-primary transition-colors">
+                      <RadioGroupItem value="all" />
+                      <div>
+                        <div className="font-medium">Post for all Indian colleges</div>
+                        <div className="text-xs text-muted-foreground">Visible to eligible students nationwide</div>
+                      </div>
+                    </label>
+                    <label className="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:border-primary transition-colors">
+                      <RadioGroupItem value="specific" />
+                      <div>
+                        <div className="font-medium">Post for specific colleges</div>
+                        <div className="text-xs text-muted-foreground">Choose one or more colleges from the list</div>
+                        {postTarget === "specific" && selectedColleges.length > 0 && (
+                          <div className="mt-1 text-xs">Selected: {selectedColleges.slice(0,2).join(", ")}{selectedColleges.length>2?` +${selectedColleges.length-2}`:""}</div>
+                        )}
+                      </div>
+                    </label>
+                  </RadioGroup>
+                  {postTarget === "specific" && (
+                    <div>
+                      <Button type="button" variant="secondary" onClick={() => setCollegeDialogOpen(true)} className="mt-2">
+                        Manage selected colleges
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
-                {internshipType === "college-specific" && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    className="space-y-2"
-                  >
-                    <Label>Select Colleges *</Label>
-                    <div className="border-2 rounded-lg p-4 space-y-2 max-h-48 overflow-y-auto bg-card">
-                      {colleges.map((college) => (
-                        <div key={college} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={college}
-                            checked={selectedColleges.includes(college)}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                setSelectedColleges([...selectedColleges, college]);
-                              } else {
-                                setSelectedColleges(selectedColleges.filter(c => c !== college));
-                              }
-                            }}
-                          />
-                          <label
-                            htmlFor={college}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                          >
-                            {college}
-                          </label>
+                {/* College selection modal */}
+                <Dialog open={collegeDialogOpen} onOpenChange={setCollegeDialogOpen}>
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle>Select Colleges</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-3">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Search colleges (e.g., IIT, NIT, VIT)"
+                          className="pl-9"
+                          value={collegeSearch}
+                          onChange={(e) => setCollegeSearch(e.target.value)}
+                        />
+                      </div>
+                      <div className="border rounded-lg max-h-72 overflow-y-auto divide-y">
+                        {filteredColleges.length === 0 ? (
+                          <div className="p-4 text-sm text-muted-foreground">No colleges found.</div>
+                        ) : (
+                          filteredColleges.map((college) => (
+                            <label key={college} className="flex items-center gap-3 p-3 hover:bg-muted/60 cursor-pointer">
+                              <Checkbox
+                                checked={selectedColleges.includes(college)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    setSelectedColleges((prev) => Array.from(new Set([...prev, college])));
+                                  } else {
+                                    setSelectedColleges((prev) => prev.filter((c) => c !== college));
+                                  }
+                                }}
+                              />
+                              <span className="text-sm">{college}</span>
+                            </label>
+                          ))
+                        )}
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <div className="text-xs text-muted-foreground">{selectedColleges.length} selected</div>
+                        <div className="flex gap-2">
+                          <Button type="button" variant="outline" onClick={() => setSelectedColleges([])}>Clear</Button>
+                          <Button type="button" onClick={() => setCollegeDialogOpen(false)}>Done</Button>
                         </div>
-                      ))}
+                      </div>
                     </div>
-                    {selectedColleges.length > 0 && (
-                      <p className="text-xs text-muted-foreground">
-                        {selectedColleges.length} college(s) selected
-                      </p>
-                    )}
-                  </motion.div>
-                )}
+                  </DialogContent>
+                </Dialog>
 
                 <div className="space-y-2">
                   <Label>Description *</Label>
