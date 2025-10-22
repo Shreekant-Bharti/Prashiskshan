@@ -2,21 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { motion } from "motion/react";
-import {
-  LogOut,
-  Users,
-  CheckCircle,
-  XCircle,
-  FileText,
-  BarChart3,
-  MessageSquare,
-  Building,
-  User,
-  Bell,
-  TrendingUp,
-  Calendar,
-  Shield,
-} from "lucide-react";
+import { LogOut, Shield } from "lucide-react";
 
 // Import admin components
 import UserManagementCard from "../components/admin/UserManagementCard";
@@ -25,8 +11,7 @@ import ReportsAnalyticsCard from "../components/admin/ReportsAnalyticsCard";
 import PublishNoticeCard from "../components/admin/PublishNoticeCard";
 import ApprovalHistoryCard from "../components/admin/ApprovalHistoryCard";
 import FeedbackComplaintsCard from "../components/admin/FeedbackComplaintsCard";
-import CollegeManagementCard from "../components/admin/CollegeManagementCard";
-import AdminProfileCard from "../components/admin/AdminProfileCard";
+// Removed CollegeManagement and Admin Profile components per cleanup
 
 // Dummy data - declared outside component for persistence
 const DUMMY_PENDING_USERS = {
@@ -323,49 +308,7 @@ const AdminDashboard = () => {
     },
   ]);
 
-  const [colleges, setColleges] = useState([
-    {
-      id: 1,
-      name: "MIT Manipal",
-      location: "Manipal, Karnataka",
-      type: "engineering" as const,
-      accreditation: "NAAC A+",
-      contactEmail: "info@manipal.edu",
-      contactPhone: "+91 820 2570 100",
-      website: "https://www.manipal.edu",
-      totalStudents: 15000,
-      activeFaculty: 800,
-      status: "active" as const,
-      addedDate: "2023-08-15T00:00:00Z",
-      lastUpdated: "2024-01-10T00:00:00Z",
-    },
-  ]);
-
-  const [adminProfile, setAdminProfile] = useState({
-    id: "admin001",
-    name: "Admin User",
-    email: "admin@campus2career.com",
-    phone: "+91 98765 43210",
-    role: "System Administrator",
-    department: "IT Administration",
-    joinDate: "2023-01-15T00:00:00Z",
-    lastLogin: "2024-01-20T08:30:00Z",
-    avatar: "",
-    permissions: [
-      "User Management",
-      "Content Management",
-      "System Settings",
-      "Reports",
-      "Security",
-    ],
-    preferences: {
-      theme: "light" as const,
-      notifications: true,
-      emailUpdates: true,
-      language: "en",
-      timezone: "Asia/Kolkata",
-    },
-  });
+  // Removed colleges and adminProfile states after removing related cards
 
   // Stats state
   const [stats, setStats] = useState({
@@ -414,8 +357,10 @@ const AdminDashboard = () => {
   const playSuccessSound = () => {
     // Create success sound
     try {
-      const audioContext = new (window.AudioContext ||
-        (window as any).webkitAudioContext)();
+      const w = window as Window & { webkitAudioContext?: typeof AudioContext };
+      const AudioCtor = window.AudioContext || w.webkitAudioContext;
+      if (!AudioCtor) return;
+      const audioContext = new AudioCtor();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 
@@ -557,17 +502,7 @@ const AdminDashboard = () => {
             playSuccessSound={playSuccessSound}
           />
 
-          <CollegeManagementCard
-            colleges={colleges}
-            setColleges={setColleges}
-            playSuccessSound={playSuccessSound}
-          />
-
-          <AdminProfileCard
-            adminProfile={adminProfile}
-            setAdminProfile={setAdminProfile}
-            playSuccessSound={playSuccessSound}
-          />
+          {/* College Management and Admin Profile sections removed */}
         </div>
       </div>
     </div>

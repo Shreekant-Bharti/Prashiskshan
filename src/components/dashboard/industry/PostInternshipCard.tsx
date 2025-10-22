@@ -4,12 +4,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const PostInternshipCard = () => {
@@ -21,7 +32,7 @@ const PostInternshipCard = () => {
   const [postTarget, setPostTarget] = useState<"all" | "specific">("all");
   const [collegeDialogOpen, setCollegeDialogOpen] = useState(false);
   const [collegeSearch, setCollegeSearch] = useState("");
-  
+
   // Dummy Indian colleges dataset (can be replaced with API later)
   const colleges = [
     "IIT Bombay",
@@ -50,7 +61,7 @@ const PostInternshipCard = () => {
     if (!q) return colleges;
     return colleges.filter((c) => c.toLowerCase().includes(q));
   }, [collegeSearch, colleges]);
-  
+
   const [formData, setFormData] = useState({
     title: "",
     duration: "",
@@ -64,9 +75,11 @@ const PostInternshipCard = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Play success sound
-    const audio = new Audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSyBzvLZiTYIGGm98OScTgwOUKnk7bhlHAU2j9nyxnkpBSp+zPDajz4JFF+28OqnVRQJRZ/h88BtIQUsgc7y2Ik2CBhqvvDknE4MDlCp5O24ZRwENI/Z8sZ5KQUpfszw2o8+CRVftPDqp1UUCUSe4fPAbSEFLIHO8tmJNggZa77w5JxODA5QqeTtuGUcBDSP2fLGeSgFK37M8NqPPgkVX7Tw6qdVFAlEn+HzwG0hBSyBzvLZiTYIGWy+8OScTgwOUKnk7bhlHAU0j9nyxnkoBSx+zPDajz4JFF+08OqnVRQKQ5/h88BtIQUsgc7y2Yk2CBlsvvDknE4MDlCp5O24ZRwFNI/Z8sZ5KAUsfszw2o8+CRVftPDqp1UUCkSf4fPAbSEFLIHO8tmJNggZa77w5JxODA5QqeTtuGUcBTSP2fLGeSgFLH7M8NqPPgkUX7Tw6qdVFApDn+HzwG0hBSyBzvLZiTYIGWu+8OScTgwOUKnk7bhlHAU0j9nyxnkoBSx+zPDajz4JFF+08OqnVRQKQ5/h88BtIQUsgc7y2Yk2CBlrvvDknE4MDlCp5O24ZRwFNI/Z8sZ5KAUsfs==");
+    const audio = new Audio(
+      "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSyBzvLZiTYIGGm98OScTgwOUKnk7bhlHAU2j9nyxnkpBSp+zPDajz4JFF+28OqnVRQJRZ/h88BtIQUsgc7y2Ik2CBhqvvDknE4MDlCp5O24ZRwENI/Z8sZ5KQUpfszw2o8+CRVftPDqp1UUCUSe4fPAbSEFLIHO8tmJNggZa77w5JxODA5QqeTtuGUcBDSP2fLGeSgFK37M8NqPPgkVX7Tw6qdVFAlEn+HzwG0hBSyBzvLZiTYIGWy+8OScTgwOUKnk7bhlHAU0j9nyxnkoBSx+zPDajz4JFF+08OqnVRQKQ5/h88BtIQUsgc7y2Yk2CBlsvvDknE4MDlCp5O24ZRwFNI/Z8sZ5KAUsfszw2o8+CRVftPDqp1UUCkSf4fPAbSEFLIHO8tmJNggZa77w5JxODA5QqeTtuGUcBTSP2fLGeSgFLH7M8NqPPgkUX7Tw6qdVFApDn+HzwG0hBSyBzvLZiTYIGWu+8OScTgwOUKnk7bhlHAU0j9nyxnkoBSx+zPDajz4JFF+08OqnVRQKQ5/h88BtIQUsgc7y2Yk2CBlrvvDknE4MDlCp5O24ZRwFNI/Z8sZ5KAUsfs=="
+    );
     audio.play().catch(() => {});
 
     const newInternship = {
@@ -77,7 +90,10 @@ const PostInternshipCard = () => {
       company: "Infosys",
       id: Date.now(),
       postedDate: new Date().toISOString(),
-      selectedColleges: internshipType === "college-specific" || postTarget === "specific" ? selectedColleges : [],
+      selectedColleges:
+        internshipType === "college-specific" || postTarget === "specific"
+          ? selectedColleges
+          : [],
     };
 
     // Validation: ensure colleges selected if specific targeting
@@ -89,19 +105,21 @@ const PostInternshipCard = () => {
     if (postTarget === "all" || internshipType === "universal") {
       // Universal internships - auto approve after 10 seconds
       setShowSuccess(true);
-      
+
       setTimeout(() => {
         // Auto-approve and add to my internships
-        const myInternships = JSON.parse(localStorage.getItem("my_internships") || "[]");
+        const myInternships = JSON.parse(
+          localStorage.getItem("my_internships") || "[]"
+        );
         myInternships.push({
           ...newInternship,
           status: "active",
           applications: 0,
         });
         localStorage.setItem("my_internships", JSON.stringify(myInternships));
-        
+
         toast.success("Internship approved and posted successfully!");
-        
+
         setShowSuccess(false);
         setShowForm(false);
         setFormData({
@@ -120,12 +138,17 @@ const PostInternshipCard = () => {
       }, 10000); // 10 seconds
     } else {
       // College-specific internships - need admin approval
-      const pendingInternships = JSON.parse(localStorage.getItem("pending_internships") || "[]");
+      const pendingInternships = JSON.parse(
+        localStorage.getItem("pending_internships") || "[]"
+      );
       pendingInternships.push({
         ...newInternship,
         status: "pending",
       });
-      localStorage.setItem("pending_internships", JSON.stringify(pendingInternships));
+      localStorage.setItem(
+        "pending_internships",
+        JSON.stringify(pendingInternships)
+      );
 
       setShowSuccess(true);
       setTimeout(() => {
@@ -175,10 +198,12 @@ const PostInternshipCard = () => {
                 className="flex flex-col items-center justify-center py-12 space-y-4"
               >
                 <CheckCircle className="h-20 w-20 text-green-500 animate-pulse" />
-                <h3 className="text-2xl font-bold text-center">Internship Submitted!</h3>
+                <h3 className="text-2xl font-bold text-center">
+                  Internship Submitted!
+                </h3>
                 <p className="text-muted-foreground text-center">
-                  {internshipType === "college-specific" 
-                    ? "Waiting for Admin approval..." 
+                  {internshipType === "college-specific"
+                    ? "Waiting for Admin approval..."
                     : "Processing your internship..."}
                 </p>
               </motion.div>
@@ -194,7 +219,9 @@ const PostInternshipCard = () => {
                   <Input
                     required
                     value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, title: e.target.value })
+                    }
                     placeholder="e.g., Frontend Developer"
                   />
                 </div>
@@ -205,7 +232,9 @@ const PostInternshipCard = () => {
                     <Input
                       required
                       value={formData.duration}
-                      onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, duration: e.target.value })
+                      }
                       placeholder="e.g., 3 months"
                     />
                   </div>
@@ -214,7 +243,9 @@ const PostInternshipCard = () => {
                     <Input
                       required
                       value={formData.stipend}
-                      onChange={(e) => setFormData({ ...formData, stipend: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, stipend: e.target.value })
+                      }
                       placeholder="e.g., ₹15,000/month"
                     />
                   </div>
@@ -222,7 +253,13 @@ const PostInternshipCard = () => {
 
                 <div className="space-y-2">
                   <Label>Mode *</Label>
-                  <Select required value={formData.mode} onValueChange={(value) => setFormData({ ...formData, mode: value })}>
+                  <Select
+                    required
+                    value={formData.mode}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, mode: value })
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select mode" />
                     </SelectTrigger>
@@ -237,7 +274,13 @@ const PostInternshipCard = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Eligibility Year *</Label>
-                    <Select required value={formData.eligibilityYear} onValueChange={(value) => setFormData({ ...formData, eligibilityYear: value })}>
+                    <Select
+                      required
+                      value={formData.eligibilityYear}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, eligibilityYear: value })
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Year" />
                       </SelectTrigger>
@@ -254,7 +297,12 @@ const PostInternshipCard = () => {
                     <Input
                       required
                       value={formData.eligibilityBranch}
-                      onChange={(e) => setFormData({ ...formData, eligibilityBranch: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          eligibilityBranch: e.target.value,
+                        })
+                      }
                       placeholder="e.g., CSE, IT"
                     />
                   </div>
@@ -277,24 +325,44 @@ const PostInternshipCard = () => {
                     <label className="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:border-primary transition-colors">
                       <RadioGroupItem value="all" />
                       <div>
-                        <div className="font-medium">Post for all Indian colleges</div>
-                        <div className="text-xs text-muted-foreground">Visible to eligible students nationwide</div>
+                        <div className="font-medium">
+                          Post for all Indian colleges
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Visible to eligible students nationwide
+                        </div>
                       </div>
                     </label>
                     <label className="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:border-primary transition-colors">
                       <RadioGroupItem value="specific" />
                       <div>
-                        <div className="font-medium">Post for specific colleges</div>
-                        <div className="text-xs text-muted-foreground">Choose one or more colleges from the list</div>
-                        {postTarget === "specific" && selectedColleges.length > 0 && (
-                          <div className="mt-1 text-xs">Selected: {selectedColleges.slice(0,2).join(", ")}{selectedColleges.length>2?` +${selectedColleges.length-2}`:""}</div>
-                        )}
+                        <div className="font-medium">
+                          Post for specific colleges
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Choose one or more colleges from the list
+                        </div>
+                        {postTarget === "specific" &&
+                          selectedColleges.length > 0 && (
+                            <div className="mt-1 text-xs">
+                              Selected:{" "}
+                              {selectedColleges.slice(0, 2).join(", ")}
+                              {selectedColleges.length > 2
+                                ? ` +${selectedColleges.length - 2}`
+                                : ""}
+                            </div>
+                          )}
                       </div>
                     </label>
                   </RadioGroup>
                   {postTarget === "specific" && (
                     <div>
-                      <Button type="button" variant="secondary" onClick={() => setCollegeDialogOpen(true)} className="mt-2">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => setCollegeDialogOpen(true)}
+                        className="mt-2"
+                      >
                         Manage selected colleges
                       </Button>
                     </div>
@@ -302,7 +370,10 @@ const PostInternshipCard = () => {
                 </div>
 
                 {/* College selection modal */}
-                <Dialog open={collegeDialogOpen} onOpenChange={setCollegeDialogOpen}>
+                <Dialog
+                  open={collegeDialogOpen}
+                  onOpenChange={setCollegeDialogOpen}
+                >
                   <DialogContent className="max-w-2xl">
                     <DialogHeader>
                       <DialogTitle>Select Colleges</DialogTitle>
@@ -319,17 +390,26 @@ const PostInternshipCard = () => {
                       </div>
                       <div className="border rounded-lg max-h-72 overflow-y-auto divide-y">
                         {filteredColleges.length === 0 ? (
-                          <div className="p-4 text-sm text-muted-foreground">No colleges found.</div>
+                          <div className="p-4 text-sm text-muted-foreground">
+                            No colleges found.
+                          </div>
                         ) : (
                           filteredColleges.map((college) => (
-                            <label key={college} className="flex items-center gap-3 p-3 hover:bg-muted/60 cursor-pointer">
+                            <label
+                              key={college}
+                              className="flex items-center gap-3 p-3 hover:bg-muted/60 cursor-pointer"
+                            >
                               <Checkbox
                                 checked={selectedColleges.includes(college)}
                                 onCheckedChange={(checked) => {
                                   if (checked) {
-                                    setSelectedColleges((prev) => Array.from(new Set([...prev, college])));
+                                    setSelectedColleges((prev) =>
+                                      Array.from(new Set([...prev, college]))
+                                    );
                                   } else {
-                                    setSelectedColleges((prev) => prev.filter((c) => c !== college));
+                                    setSelectedColleges((prev) =>
+                                      prev.filter((c) => c !== college)
+                                    );
                                   }
                                 }}
                               />
@@ -339,10 +419,23 @@ const PostInternshipCard = () => {
                         )}
                       </div>
                       <div className="flex justify-between items-center">
-                        <div className="text-xs text-muted-foreground">{selectedColleges.length} selected</div>
+                        <div className="text-xs text-muted-foreground">
+                          {selectedColleges.length} selected
+                        </div>
                         <div className="flex gap-2">
-                          <Button type="button" variant="outline" onClick={() => setSelectedColleges([])}>Clear</Button>
-                          <Button type="button" onClick={() => setCollegeDialogOpen(false)}>Done</Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setSelectedColleges([])}
+                          >
+                            Clear
+                          </Button>
+                          <Button
+                            type="button"
+                            onClick={() => setCollegeDialogOpen(false)}
+                          >
+                            Done
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -354,14 +447,19 @@ const PostInternshipCard = () => {
                   <Textarea
                     required
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, description: e.target.value })
+                    }
                     placeholder="Describe the internship responsibilities and requirements..."
                     rows={4}
                   />
                 </div>
 
                 <div className="flex gap-2">
-                  <Button type="submit" className="flex-1 hover:scale-105 transition-transform">
+                  <Button
+                    type="submit"
+                    className="flex-1 hover:scale-105 transition-transform"
+                  >
                     Submit for Approval
                   </Button>
                   <Button

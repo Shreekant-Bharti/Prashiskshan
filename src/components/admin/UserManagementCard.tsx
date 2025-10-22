@@ -14,28 +14,24 @@ interface User {
   id: number;
   name: string;
   email: string;
-  [key: string]: any;
+  college?: string;
+  rejectionReason?: string;
+  [key: string]: unknown;
 }
 
+type UserGroups = {
+  students: User[];
+  faculty: User[];
+  industry: User[];
+};
+
 interface UserManagementCardProps {
-  pendingUsers: {
-    students: User[];
-    faculty: User[];
-    industry: User[];
-  };
-  setPendingUsers: React.Dispatch<React.SetStateAction<any>>;
-  activeUsers: {
-    students: User[];
-    faculty: User[];
-    industry: User[];
-  };
-  setActiveUsers: React.Dispatch<React.SetStateAction<any>>;
-  rejectedUsers: {
-    students: User[];
-    faculty: User[];
-    industry: User[];
-  };
-  setRejectedUsers: React.Dispatch<React.SetStateAction<any>>;
+  pendingUsers: UserGroups;
+  setPendingUsers: React.Dispatch<React.SetStateAction<UserGroups>>;
+  activeUsers: UserGroups;
+  setActiveUsers: React.Dispatch<React.SetStateAction<UserGroups>>;
+  rejectedUsers: UserGroups;
+  setRejectedUsers: React.Dispatch<React.SetStateAction<UserGroups>>;
   playSuccessSound: () => void;
 }
 
@@ -225,7 +221,7 @@ const UserManagementCard: React.FC<UserManagementCardProps> = ({
 
       {/* User Type Selection */}
       <div className="flex space-x-2 mb-4">
-        {["students", "faculty", "industry"].map((type) => (
+        {["students", "industry"].map((type) => (
           <button
             key={type}
             onClick={() => setSelectedUserType(type)}
@@ -293,19 +289,28 @@ const UserManagementCard: React.FC<UserManagementCardProps> = ({
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <div className="text-lg font-semibold text-blue-600">
-              {Object.values(pendingUsers).flat().length}
+              {(["students", "industry"] as Array<keyof UserGroups>).reduce(
+                (acc, key) => acc + pendingUsers[key].length,
+                0
+              )}
             </div>
             <div className="text-xs text-gray-500">Pending</div>
           </div>
           <div>
             <div className="text-lg font-semibold text-green-600">
-              {Object.values(activeUsers).flat().length}
+              {(["students", "industry"] as Array<keyof UserGroups>).reduce(
+                (acc, key) => acc + activeUsers[key].length,
+                0
+              )}
             </div>
             <div className="text-xs text-gray-500">Active</div>
           </div>
           <div>
             <div className="text-lg font-semibold text-red-600">
-              {Object.values(rejectedUsers).flat().length}
+              {(["students", "industry"] as Array<keyof UserGroups>).reduce(
+                (acc, key) => acc + rejectedUsers[key].length,
+                0
+              )}
             </div>
             <div className="text-xs text-gray-500">Rejected</div>
           </div>
